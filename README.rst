@@ -101,13 +101,11 @@ Screenshot
 Vista previa del reproductor.
 
 .. image:: /resources/snapshot-10-04-2021.PNG
-   :align: center
    :width: 512px
    :height: 300px
    :scale: 50%
 
 .. image:: /resources/snapshot-10-04-2021-2.PNG
-   :align: center
    :width: 512px
    :height: 300px
    :scale: 50%
