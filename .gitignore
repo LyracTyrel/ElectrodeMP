@@ -1,0 +1,40 @@
+
+# Archivo de Ignoración de GIT para el Proyecto de ElectrodeMP.
+
+# ------------------------------------------------------------------------------
+
+# Ocultaremos todos los archivos dentro de la carpeta bin para la salida del Media Player.
+
+bin/*.*
+
+# Ignoraremos todos los archivos del directorio doc.
+
+doc/*.*
+
+# Asi como de la carpeta de html.
+
+doc/html/
+
+# Asi mismo ocultaremos del tracking la carpeta de recursos/design.
+
+resources/Design/
+
+# Asi como la carpeta de archivos de respaldos.
+
+resources/Backups/
+
+# Ignoramos la carpeta lib64 de salida.
+
+lib64/
+
+# Ignoramos la carpeta lib64 de salida.
+
+lib64-vc/
+
+# --------------------------------  Files  -------------------------------------
+
+# Ocultaremos del tracker todos los archivos de extensión (.lmk).
+
+*.lmk
+
+# ------------------------------------------------------------------------------

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Tenemos el siguiente codigo para nuestro manifesto de la Aplicacion -->
+
+<assembly
+	xmlns="urn:schemas-microsoft-com:asm.v1"
+	manifestVersion="1.0"
+	>
+	
+	<!-- Tenemos el ensamblador siguiente -->
+
+	<assemblyIdentity
+		version="1.0.0.0"
+		processorArchitecture="amd64"
+		name="ElectrodeMP"
+		type="win32"
+		/>
+	
+	<!-- La descripcion de nuestra aplicacion -->
+	
+	<description> ElectrodeMP - Media Player Alpha </description>
+	
+	<!-- Dependencias para nuestra aplicacion -->
+	
+	<dependency>
+		
+		<!-- Dependencia del ensamblado de windows -->
+		
+		<dependentAssembly>
+			
+			<!-- Anexaremos la dependencia de controles de win32 -->
+			
+			<assemblyIdentity
+				type="win32"
+				name="Microsoft.Windows.Common-Controls"
+				version="6.0.0.0"
+				processorArchitecture="amd64"
+				publicKeyToken="6595b64144ccf1df"
+				language="*"
+			/>
+			
+		</dependentAssembly>
+		
+	</dependency>
+
+</assembly>

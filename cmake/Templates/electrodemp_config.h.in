@@ -1,0 +1,57 @@
+
+// Archivo de configuración generada por CMake para la correcta interpretación del lenguaje y la biblioteca.
+
+#ifndef ELECTRODEMP_CONFIG_H
+#define ELECTRODEMP_CONFIG_H
+
+// ----------------------------  Config.h  -------------------------------------
+
+// ------------------------------  LOG  ----------------------------------------
+
+// Flag para indicar que se habilitó la salida LOG por consola de sistema.
+
+#cmakedefine ELECTRODEMP_ENABLE_CONSOLE_LOG
+
+// Flag para indicar si utilizar la consola de colores mediante termcolor.
+
+#cmakedefine ELECTRODEMP_ENABLE_TERMCOLOR
+
+// ----------------------------  Samples  --------------------------------------
+
+// Tipo de dato para utilizar en las muestras de audio.
+
+#cmakedefine ELECTRODEMP_SAMPLE_TYPE @ELECTRODEMP_SAMPLE_TYPE@
+
+// ----------------------------  Pixeles  --------------------------------------
+
+// Tipo de dato para utilizar en los pixeles de imagen.
+
+#cmakedefine ELECTRODEMP_PIXEL_TYPE @ELECTRODEMP_PIXEL_TYPE@
+
+// -----------------------------  CImg  ----------------------------------------
+
+// Flag que habilita el uso de CImg en el programa para realizar diferentes adaptaciones.
+
+#cmakedefine ELECTRODEMP_ENABLE_CIMG
+
+// ----------------------------  OpenCV  ---------------------------------------
+
+// Flag para habilitar el uso de OpenCV en la biblioteca.
+
+#cmakedefine ELECTRODEMP_ENABLE_OPENCV
+
+// ---------------------------  Funciones  -------------------------------------
+
+// Habilitaremos el uso de std::to_string para intercambio numerico a cadena.
+
+#cmakedefine ELECTRODEMP_ENABLE_FUNC_TO_STRING
+
+// --------------------------  wxThumbnail  ------------------------------------
+
+// Habilitador para la extensión de wxWidgets : wxthumbnail.
+
+#cmakedefine ELECTRODEMP_ENABLE_WX_THUMBNAIL
+
+// ------------------------------------------------------------------------------
+
+#endif // ELECTRODEMP_CONFIG_H

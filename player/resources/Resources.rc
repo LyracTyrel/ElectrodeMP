@@ -1,0 +1,88 @@
+
+// Incluiremos los recursos de nuestra aplicación entre los que encontraremos iconos y un manifest.
+
+#include <winuser.h>
+
+// Icono de la aplicación.
+
+ICON_APP					ICON						"./Logo/Icon_128.ico"
+ICON_FRAME					ICON						"./Logo/Icon_128.ico"
+
+// -----------------------------------------------------------------------------
+
+// Iconos de la Barra de Herramientas.
+
+BITMAP_TOOL_OPEN			RCDATA						"./Bitmaps/Bitmap_Tool_Open.png"
+BITMAP_TOOL_CLOSE			RCDATA						"./Bitmaps/Bitmap_Tool_Close.png"
+BITMAP_TOOL_DEVICE			RCDATA						"./Bitmaps/Bitmap_Tool_Device.png"
+
+// -----------------------------------------------------------------------------
+
+// Bitmap para el fondo y mascara de la barra de progreso.
+
+BITMAP_PROGRESS						RCDATA						"./Bitmaps/Bitmap_Progress.png"
+BITMAP_PROGRESS_DISABLE				RCDATA						"./Bitmaps/Bitmap_Progress_Disable.png"
+BITMAP_PROGRESS_FILL				RCDATA						"./Bitmaps/Bitmap_Progress_Fill.png"
+BITMAP_PROGRESS_LINE				RCDATA						"./Bitmaps/Bitmap_Progress_Line.png"
+
+// Bitmap para el cursor de la barra de progreso y la mascara.
+
+BITMAP_PROGRESS_CUR					RCDATA						"./Bitmaps/Bitmap_Progress_Cursor.png"
+BITMAP_PROGRESS_CUR_DISABLE			RCDATA						"./Bitmaps/Bitmap_Progress_Cursor_Disable.png"
+BITMAP_PROGRESS_CUR_DISABLE_MASK	RCDATA						"./Bitmaps/Bitmap_Progress_Cursor_Disable_Mask.png"
+BITMAP_PROGRESS_CUR_SELECTED		RCDATA						"./Bitmaps/Bitmap_Progress_Cursor_Selected.png"
+BITMAP_PROGRESS_CUR_PRESSED			RCDATA						"./Bitmaps/Bitmap_Progress_Cursor_Pressed.png"
+BITMAP_PROGRESS_CUR_MASK			RCDATA						"./Bitmaps/Bitmap_Progress_Cursor_Mask.png"
+
+// -----------------------------------------------------------------------------
+
+// Iconos de nuestro botón de Reproducción : Play.
+
+BITMAP_BUTTON_PLAY					RCDATA						"./Bitmaps/Bitmap_Button_Play.png"
+BITMAP_BUTTON_PLAY_DISABLE			RCDATA						"./Bitmaps/Bitmap_Button_Play_Disable.png"
+BITMAP_BUTTON_PLAY_SELECTED			RCDATA						"./Bitmaps/Bitmap_Button_Play_Selected.png"
+BITMAP_BUTTON_PLAY_PRESSED			RCDATA						"./Bitmaps/Bitmap_Button_Play_Pressed.png"
+BITMAP_BUTTON_PLAY_MASK				RCDATA						"./Bitmaps/Bitmap_Button_Play_Mask.png"
+
+// Iconos de nuestro botón de Reproducción : Pause.
+
+BITMAP_BUTTON_PAUSE					RCDATA						"./Bitmaps/Bitmap_Button_Pause.png"
+BITMAP_BUTTON_PAUSE_DISABLE			RCDATA						"./Bitmaps/Bitmap_Button_Pause_Disable.png"
+BITMAP_BUTTON_PAUSE_SELECTED		RCDATA						"./Bitmaps/Bitmap_Button_Pause_Selected.png"
+BITMAP_BUTTON_PAUSE_PRESSED			RCDATA						"./Bitmaps/Bitmap_Button_Pause_Pressed.png"
+BITMAP_BUTTON_PAUSE_MASK			RCDATA						"./Bitmaps/Bitmap_Button_Pause_Mask.png"
+
+// Iconos de nuestro botón de Reproducción : Stop.
+
+BITMAP_BUTTON_STOP					RCDATA						"./Bitmaps/Bitmap_Button_Stop.png"
+BITMAP_BUTTON_STOP_DISABLE			RCDATA						"./Bitmaps/Bitmap_Button_Stop_Disable.png"
+BITMAP_BUTTON_STOP_SELECTED			RCDATA						"./Bitmaps/Bitmap_Button_Stop_Selected.png"
+BITMAP_BUTTON_STOP_PRESSED			RCDATA						"./Bitmaps/Bitmap_Button_Stop_Pressed.png"
+BITMAP_BUTTON_STOP_MASK				RCDATA						"./Bitmaps/Bitmap_Button_Stop_Mask.png"
+
+// -----------------------------------------------------------------------------
+
+// Bitmap de la Caratula Por Defecto.
+
+BITMAP_COVER				RCDATA						"./Bitmaps/Bitmap_Cover.png"
+
+// -----------------------------------------------------------------------------
+
+// Iconos de botones de thumb de Reproducción.
+
+BITMAP_THUMB_PLAY			RCDATA						"./Bitmaps/Bitmap_Thumb_Play.png"
+BITMAP_THUMB_PAUSE			RCDATA						"./Bitmaps/Bitmap_Thumb_Pause.png"
+BITMAP_THUMB_STOP			RCDATA						"./Bitmaps/Bitmap_Thumb_Stop.png"
+
+// -----------------------------------------------------------------------------
+
+// Bitmaps del dialogo de ayuda/acerca de...
+
+BITMAP_CREATOR				RCDATA						"./Bitmaps/Bitmap_Creator.png"
+BITMAP_LOGOTIPO				RCDATA						"./Bitmaps/Bitmap_Logotipo.png"
+
+// -----------------------------------------------------------------------------
+
+// Manifesto del programa.
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID		RT_MANIFEST					"Manifest.manifest"
