@@ -153,7 +153,7 @@ path=player\resources\Resources.rc
 cursor=75:0
 [other]
 path=README.rst
-cursor=4:42
+cursor=109:17
 open=true
 [other]
 path=cmake\ElectrodeMPConfigure.cmake
