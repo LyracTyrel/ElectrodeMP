@@ -2,7 +2,7 @@
 **ElectrodeMP - Audio Media Player Alpha**
 ======================================
 
-.. image:: /resources/ElectrodeMP_Logo_512.png
+.. image:: /resources/ElectrodeMP_Logo_256.png
 
 **ElectrodeMP** (Electrode Audio Media Player) es una biblioteca escrita en lenguaje C++ 17. Su finalidad es que permita acceder a las funciones básicas de cualquier reproductor
 multimedia y cualquiera pueda expandir sus funcionalidades para hacerlo un reproductor personalizado.
@@ -99,6 +99,6 @@ Screenshot
 
 Vista previa del reproductor.
 
-.. image:: /resources/snapshot-10-04-2021.png
+.. image:: /resources/snapshot-10-04-2021.PNG
 
-.. image:: /resources/snapshot-10-04-2021-2.png
+.. image:: /resources/snapshot-10-04-2021-2.PNG
