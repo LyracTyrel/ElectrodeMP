@@ -14,7 +14,6 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
-current_source=README.rst
 path_char=\
 [source]
 path=sources\Decodificador.cpp
@@ -33,7 +32,7 @@ path=sources\Reproductor.cpp
 cursor=797:4
 [source]
 path=player\sources\Dialogo.cpp
-cursor=3:10
+cursor=111:0
 [source]
 path=player\sources\PanelCover.cpp
 cursor=203:32
@@ -154,7 +153,6 @@ cursor=75:0
 [other]
 path=README.rst
 cursor=105:14
-open=true
 [other]
 path=cmake\ElectrodeMPConfigure.cmake
 cursor=9:0

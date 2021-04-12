@@ -90,10 +90,6 @@ void Dialogo::Evento_Combo_Host (wxCommandEvent & Argumentos) {
 	
 	const std::vector <std::string> Lista_Device (std::move (Player->Get_DeviceList (Indice_Seleccionado)));
 	
-	// Recuperaremos el nombre de nuestro dispositivo actualmente utilizado con el siguiente metodo.
-	
-	const std::string Nombre_Device_Actual (Player->Get_DeviceName (Player->Get_DeviceIndex ()));
-	
 	// Limpiaremos la lista de dispositivos actualmente mostrada.
 	
 	Combo_Device->Clear ();
@@ -108,9 +104,9 @@ void Dialogo::Evento_Combo_Host (wxCommandEvent & Argumentos) {
 		
 	}
 	
-	// Asi mismo seleccionaremos el device utilizado a partir de su nombre.
+	// Asi mismo seleccionaremos el primer device en la lista.
 	
-	Combo_Device->SetStringSelection (wxString (Nombre_Device_Actual));
+	Combo_Device->SetSelection (0);
 	
 }
 
