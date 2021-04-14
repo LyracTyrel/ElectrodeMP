@@ -289,9 +289,19 @@ void Pantalla::Evento_Archivo_Cerrar (wxCommandEvent & Argumentos) {
 	
 	if (Player->Is_Open () || Player->Is_Play () || Player->Is_Pause () || Player->Is_Stop ()) {
 		
+		// Para el caso de CIMG.
+		
+		// ---------------------------------------------------------------------
+		
+		#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
+		
 		// Cerraremos nuestra previsualización del Cover.
 		
 		Player->Get_Tag ().Cover.Close_Preview ();
+		
+		#endif
+		
+		// ---------------------------------------------------------------------
 		
 		// Cerramos nuestro archivo de Audio actualmente abierto.
 		
@@ -650,9 +660,19 @@ void Pantalla::Evento_Close (wxCloseEvent & Argumentos) {
 	
 	this->Show (false);
 	
+	// -------------------------------------------------------------------------
+	
+	// Si tenemos habilitado CImg entonces cerramos esto.
+	
+	#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
+	
 	// Cerraremos nuestra previsualización del Cover antes de terminar.
 	
 	Player->Get_Tag ().Cover.Close_Preview ();
+	
+	#endif
+	
+	// -------------------------------------------------------------------------
 	
 	// Cerraremos el archivo de audio actual si no lo está todavia.
 	

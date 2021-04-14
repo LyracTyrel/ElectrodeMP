@@ -183,7 +183,7 @@ class PanelCover : public wxWindow {
 		
 		void Evento_Paint (wxPaintEvent & Argumentos);
 		
-#ifdef _WIN32
+#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
 		
 		/// @brief Metodo de evento para el caso de pulsar sobre el Cover actual y mostrar la ventana de Visualizaación (Solamente Windows).
 		/// @param Argumentos Argumento para el evento.

@@ -24,11 +24,18 @@ using namespace ElectrodeMP;
 
 Caratula::Caratula (const CComponente * Pixeles_Imagen , size_t Ancho , size_t Alto , size_t Canales) {
 	
-	// Realizaremos la asignación e inicialización correcta de nuestra imagen interna dependiendo la biblioteca utilizada.
+	// Realizaremos la asignación e inicialización correcta de nuestra imagen interna realizando una reorganización de pixeles para el caso de tener
+	// la biblioteca de Cimg.
 	
-	#if defined (ELECTRODEMP_ENABLE_CIMG)
+	// Asignaremos las medidas de la imagen.
+	
+	Imagen_Ancho = Ancho , Imagen_Alto = Alto , Imagen_Canales = Canales;
+	
+	// En caso de CImg habilitado tenemos lo siguiente.
 	
 	// -------------------------------  CImg  ----------------------------------
+	
+	#if defined (ELECTRODEMP_ENABLE_CIMG)
 	
 	// Reorganizaremos los Pixeles de nuestra Imagen a la forma en que CImg define su estructura.
 	
@@ -36,11 +43,15 @@ Caratula::Caratula (const CComponente * Pixeles_Imagen , size_t Ancho , size_t A
 	
 	// -------------------------------------------------------------------------
 	
+	// Si tenemos habilitado la biblioteca de OpenCV entonces tenemos el siguiente proceso.
+	
 	#elif defined (ELECTRODEMP_ENABLE_OPENCV)
 	
 	// ------------------------------  OpenCV  ---------------------------------
 	
+	// Reorganizaremos los pixeles a la manera en la que deben estar en OpenCV.
 	
+	Organize_Pixels_ToMat (Imagen , Pixeles_Imagen , Ancho , Alto , Canales);
 	
 	// -------------------------------------------------------------------------
 	
@@ -55,6 +66,52 @@ Caratula::Caratula (const CComponente * Pixeles_Imagen , size_t Ancho , size_t A
 	#endif
 	
 }
+
+// -----------------------------------------------------------------------------
+
+// ---------------------------  Create OpenCV  ---------------------------------
+
+// Para el caso de OpenCV.
+
+#if defined (ELECTRODEMP_ENABLE_OPENCV)
+
+// Definiremos el constructor por referencia.
+
+Caratula::Caratula (const cv::Mat & Imagen_Referencia) {
+	
+	// Primero asignaremos los datos de medida de la imagen.
+	
+	Imagen_Ancho = Imagen_Referencia.cols , Imagen_Alto = Imagen_Referencia.rows , Imagen_Canales = Imagen_Referencia.channels ();
+	
+	// Si tenemos CImg habilitado entonces.
+	
+	#if defined (ELECTRODEMP_ENABLE_CIMG)
+	
+	// ------------------------  Pixeles de CImg  ------------------------------
+	
+	// Obtenemos la referencia a los pixeles.
+	
+	const CComponente * const Pixeles_Imagen = Imagen_Referencia.ptr <CComponente> ();
+	
+	// Asignaremos una nueva caratula a nuestra imagen con los pixeles reorganizados mediante la siguiente función.
+	
+	Organize_Pixels_ToCImg (Imagen , Pixeles_Imagen , Imagen_Ancho , Imagen_Alto , Imagen_Canales);
+	
+	#else
+	
+	// -------------------------------------------------------------------------
+	
+	// Simplemente creamos una copia por referencia y conversión de la imagen de referencia.
+	
+	Imagen = Imagen_Referencia;
+	
+	// -------------------------------------------------------------------------
+	
+	#endif
+	
+}
+
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -253,6 +310,40 @@ void Caratula::Close_Preview () {
 }
 
 #endif // defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
+
+// -----------------------------------------------------------------------------
+
+// -------------------------  Utilerías Definición  ----------------------------
+
+// Vamos a realizar la definición de nuestro metodo para crear una caratula con un nuevo tamaño especificado a partir de la información de la caratula original.
+
+Caratula Caratula::Get_Picture_Scaled (const Caratula & Imagen_Cover , size_t Nuevo_Ancho , size_t Nuevo_Alto) {
+	
+	if (Imagen_Cover.Is_Valid ()) {
+		
+		#if defined (ELECTRODEMP_ENABLE_CIMG)
+		
+		CImagen Imagen_Resized = std::move (Imagen_Cover.Imagen.get_resize (Nuevo_Ancho , Nuevo_Alto , -100 , Imagen_Cover.Get_Channels () , 3));
+		
+		Caratula Resultado;
+		
+		Resultado.Imagen = std::move (Imagen_Resized);
+		
+		return std::move (Resultado);
+		
+		#elif defined (ELECTRODEMP_ENABLE_OPENCV)
+		
+		//cv::Mat Imagen_Resi = cv::Mat (cv::Size (303 , 303) , Imagen.type ());
+		
+		//cv::resize (Imagen , Imagen_Resi , Imagen_Resi.size () , 0 , 0 , cv::INTER_AREA);
+		
+		#endif
+		
+	}
+	
+	return std::move (Caratula ());
+	
+}
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1062,7 +1153,21 @@ Caratula Etiquetador::Get_Picture (const TagLib::ID3v2::AttachedPictureFrame * I
 	
 	const ByteVector Datos_Imagen = ID3v2_Picture->picture ();
 	
-	// --------------------------  Decodificando  ------------------------------
+	// Las medidas de la imagen estarán en nuestras variables siguientes.
+	
+	size_t Ancho_Imagen = 0u , Alto_Imagen = 0u , Canales_Imagen = 0u;
+	
+	// Los pixeles de la imagen decodificados serán estos :
+	
+	const Caratula::CComponente * Datos_Pixeles = nullptr;
+	
+	// -------------------------------------------------------------------------
+	
+	// Tenemos la decodificación ofrecida por OpenCV.
+	
+	#if defined (ELECTRODEMP_ENABLE_OPENCV)
+	
+	// --------------------  Decodificando OpenCV ------------------------------
 	
 	// Para decodificar la Imagen utilizaremos la biblioteca de OpenCV , misma que nos provee de muchos metodos para el procesamiento de imagenes y algoritmos
 	// para realizar cambios en la misma. Usaremos el modulo de imcodecs para poder decodificar los datos de la imagen que tenemos actualmente asignada y
@@ -1079,30 +1184,80 @@ Caratula Etiquetador::Get_Picture (const TagLib::ID3v2::AttachedPictureFrame * I
 	
 	cv::Mat Imagen = cv::imdecode (Datos , cv::ImreadModes::IMREAD_UNCHANGED);
 	
+	// Obtenemos entonces las Medidas de Nuestra Imagen leida usando los campos y metodos de la clase Mat. Determinaremos el Ancho , Alto y Canales de la
+	// Imagen de entrada.
+	
+	Ancho_Imagen = Imagen.cols , Alto_Imagen =  Imagen.rows , Canales_Imagen = Imagen.channels ();
+	
+	// Asignaremos los datos de pixel decodificados.
+	
+	Datos_Pixeles = Imagen.ptr <Caratula::CComponente> ();
+	
+	// -------------------------------------------------------------------------
+	
+	#endif
+	
+	// ---------------------------  Creando Cover  -----------------------------
+	
+	// -------------------------------------------------------------------------
+	
 	// Validamos que la imagen fue decodificada correctamente mirando el array interno en la Matriz obtenida.
 	
-	if (Imagen.data != nullptr) {
+	if (Datos_Pixeles != nullptr) {
+		
+		// Para el caso de CImg tenemos que realizar una reorganización de pixeles de esta manera.
+		
+		#if defined (ELECTRODEMP_ENABLE_CIMG)
 		
 		// ---------------------  Reorganizando Pixeles  -----------------------
 		
 		// La siguiente parte una vez que la matrix de pixeles fue llenada por completo , tenemos que organizar los pixeles en una forma planar donde cada canal
 		// esté completamente separado uno de otro , por lo que el acceso a cada componente de color será independiente.
 		
-		// Obtenemos entonces las Medidas de Nuestra Imagen leida usando los campos y metodos de la clase Mat. Determinaremos el Ancho , Alto y Canales de la
-		// Imagen de entrada.
-		
-		const size_t Ancho = Imagen.cols , Alto =  Imagen.rows , Canales = Imagen.channels ();
-		
 		// Una vez hecho estó podemos entonces reorganizar todos los pixeles en la data interna de la Imagen , para estó usaremos el metodo estatico de la
 		// Caratula que aplica ael algoritmo para reorganizar todos los pixeles devolviendo a la salida un array de pixeles nuevo para construir la caratula.
 		
 		// Pasaremos al metodo el ptr de datos reinterpretado conforme el Tipo de Componente y las medidas de la imagen.
 		
-		Caratula Imagen_Cover (Imagen.ptr <Caratula::CComponente> () , Ancho , Alto , Canales);
+		Caratula Imagen_Cover (Datos_Pixeles , Ancho_Imagen , Alto_Imagen , Canales_Imagen);
 		
-		// Ya que tenemos los nuevos pixeles organizados conforme la CImage , liberamos la memoria de nuestra Matriz de OpenCV.
+		// ---------------------------------------------------------------------
+		
+		#elif defined (ELECTRODEMP_ENABLE_OPENCV)
+		
+		// ---------------------  Copiando Referencia  -------------------------
+		
+		// Si es el caso de OpenCV entonces solamente copiaremos la referencia de la matriz de pixeles ya asignada.
+		
+		Caratula Imagen_Cover (Imagen);
+		
+		#else
+		
+		// ---------------------------------------------------------------------
+		
+		// Decodificación nativa de imagen .....
+		
+		Caratula Imagen_Cover;
+		
+		// ---------------------------------------------------------------------
+		
+		#endif
+		
+		// -------------------  Liberación de Memoria  -------------------------
+		
+		// Parael caso de OpenCV podemos liberar la memoria utilizada de la siguiente manera.
+		
+		#if defined (ELECTRODEMP_ENABLE_OPENCV)
+		
+		// Liberamos memoria.
 		
 		Imagen.release ();
+		
+		#endif
+		
+		// ---------------------------------------------------------------------
+		
+		// ---------------------------------------------------------------------
 		
 		// Y finalmente devolvemos la nueva Caratula creada con el array de Pixeles generado y las medidas de la Imagen.
 		

@@ -221,7 +221,7 @@ PantallaBase::PantallaBase( wxWindow* parent, wxWindowID id, const wxString& tit
 	
 	Menu_Herramientas = new wxMenu();
 	wxMenuItem* Menu_Herramientas_Device;
-	Menu_Herramientas_Device = new wxMenuItem( Menu_Herramientas, MENU_HERRAMIENTAS_DEVICE_ID, wxString( wxT("Seleccionar API - Device") ) + wxT('\t') + wxT("Ctrl+D"), wxT("Seleccionar API y Dispositivo de Salida"), wxITEM_NORMAL );
+	Menu_Herramientas_Device = new wxMenuItem( Menu_Herramientas, MENU_HERRAMIENTAS_DEVICE_ID, wxString( wxT("Seleccionar dispositivo de salida") ) + wxT('\t') + wxT("Ctrl+D"), wxT("Seleccionar API y Dispositivo de Salida de Audio"), wxITEM_NORMAL );
 	Menu_Herramientas->Append( Menu_Herramientas_Device );
 	
 	Barra_Menu->Append( Menu_Herramientas, wxT("Herramientas") );
@@ -244,7 +244,7 @@ PantallaBase::PantallaBase( wxWindow* parent, wxWindowID id, const wxString& tit
 	
 	Herramienta_Cerrar = Barra_Herramientas->AddTool( HERRAMIENTA_CERRAR_ID, wxT("Cerrar"), wxBitmap( wxT("BITMAP_TOOL_CLOSE"), wxBITMAP_TYPE_PNG_RESOURCE ), wxNullBitmap, wxITEM_NORMAL, wxT("Cerrar archivo de Audio Actual"), wxEmptyString, NULL );
 	
-	Herramienta_Device = Barra_Herramientas->AddTool( HERRAMIENTA_DEVICE_ID, wxT("Seleccionar API/Dispositivo"), wxBitmap( wxT("BITMAP_TOOL_DEVICE"), wxBITMAP_TYPE_PNG_RESOURCE ), wxNullBitmap, wxITEM_NORMAL, wxT("Cerrar archivo de Audio Actual"), wxEmptyString, NULL );
+	Herramienta_Device = Barra_Herramientas->AddTool( HERRAMIENTA_DEVICE_ID, wxT("Dispositivo de Salida"), wxBitmap( wxT("BITMAP_TOOL_DEVICE"), wxBITMAP_TYPE_PNG_RESOURCE ), wxNullBitmap, wxITEM_NORMAL, wxT("Cerrar archivo de Audio Actual"), wxEmptyString, NULL );
 	
 	Barra_Herramientas->Realize();
 	

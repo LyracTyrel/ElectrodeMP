@@ -60,9 +60,11 @@ void PanelCover::Set_Cover (const Caratula & Cover) {
 		
 		Init_Bitmap ();
 		
+		// ---------------------------------------------------------------------
+		
 		// Validamos si tenemos el visualizador activo.
 		
-		#ifdef _WIN32
+		#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
 		
 		// Cerraremos un visualizador previo antes de continuar.
 		
@@ -73,6 +75,8 @@ void PanelCover::Set_Cover (const Caratula & Cover) {
 		Caratula::Init_Preview (Cover_Asignado);
 		
 		#endif
+		
+		// ---------------------------------------------------------------------
 		
 		// Finalmente asignaremos el objeto de Bitmap del Contexto de Memoria actual.
 		
@@ -88,13 +92,15 @@ void PanelCover::Clear_Cover () {
 	
 	// Cerraremos primero nuestra Ventana de Previsualización si todavia no lo está (unicamente para windows).
 	
-	#ifdef _WIN32
+	#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
 	
 	// Cerramos la ventana.
 	
 	Caratula::Close_Preview ();
 	
 	#endif
+	
+	// ---------------------------------------------------------------------
 	
 	// Vamos a liberar la imagen de bitmap del contexto actual.
 	
@@ -126,7 +132,7 @@ BEGIN_EVENT_TABLE (PanelCover , wxWindow)
 	
 	// Eventos de Mouse solo para windows.
 	
-	#ifdef _WIN32
+	#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
 	
 	EVT_MOUSE_EVENTS (PanelCover::Evento_Mouse)
 	
@@ -173,7 +179,9 @@ void PanelCover::Evento_Paint (wxPaintEvent & Pintador) {
 
 // Para el caso de windows implementaremos el siguiente evento tambien.
 
-#ifdef _WIN32
+#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
+
+// ---------------------------------------------------------------------
 
 // Implementaremos el evento para poder mostrar la caratula de la song al pulsar sobre nuestro contexto.
 
@@ -235,13 +243,15 @@ PanelCover::~ PanelCover () {
 	
 	// Cerramos nuestra ventana de visualización del contexto (windows solamente).
 	
-#ifdef _WIN32
+#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
 	
 	// Cerramos la ventana.
 	
 	Cover_Asignado.Close_Preview ();
 	
 #endif
+	
+	// -------------------------------------------------------------------------
 	
 	// Vamos a liberar la imagen de bitmap del contexto actual.
 	

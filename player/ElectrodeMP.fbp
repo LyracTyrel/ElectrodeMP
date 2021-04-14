@@ -1420,10 +1420,10 @@
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
-                        <property name="help">Seleccionar API y Dispositivo de Salida</property>
+                        <property name="help">Seleccionar API y Dispositivo de Salida de Audio</property>
                         <property name="id">MENU_HERRAMIENTAS_DEVICE_ID</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Seleccionar API - Device</property>
+                        <property name="label">Seleccionar dispositivo de salida</property>
                         <property name="name">Menu_Herramientas_Device</property>
                         <property name="permission">none</property>
                         <property name="shortcut">Ctrl+D</property>
@@ -1536,7 +1536,7 @@
                     <property name="context_menu">0</property>
                     <property name="id">HERRAMIENTA_DEVICE_ID</property>
                     <property name="kind">wxITEM_NORMAL</property>
-                    <property name="label">Seleccionar API/Dispositivo</property>
+                    <property name="label">Dispositivo de Salida</property>
                     <property name="name">Herramienta_Device</property>
                     <property name="permission">protected</property>
                     <property name="statusbar"></property>

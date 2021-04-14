@@ -252,6 +252,12 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		// elemento de imagen se puede mover. Tenemos el siguiente Color de base para la iteración.
 		
 		mutable value_type Iterador_Base;
+		
+		// ----------------------  Step  -------------------------------
+		
+		// Un valor size_t que indica la cantidad de incremento que se le añadirá a cada iterador al sumar.
+		
+		mutable size_t Iterador_Incremento;
 	
 	// Este tipo de iterador cuenta con las siguientes funciones
 	
@@ -271,9 +277,10 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		/// @param Inicio_R Iterador de inicio para el Canal R de la Imagen.
 		/// @param Inicio_G Iterador de inicio para el Canal G de la Imagen.
 		/// @param Inicio_B Iterador de inicio para el Canal B de la Imagen.
+		/// @param Incremento Cantidad a incrementar en cada paso (step) al sumar a los iteradores base de cada canal.
 		
-		explicit Color_Iterator (const CIterator & Inicio_R , const CIterator & Inicio_G , const CIterator & Inicio_B) :
-			Iterador_Base (Inicio_R , Inicio_G , Inicio_B) {}
+		explicit Color_Iterator (const CIterator & Inicio_R , const CIterator & Inicio_G , const CIterator & Inicio_B , size_t Incremento = 1u) :
+			Iterador_Base (Inicio_R , Inicio_G , Inicio_B) , Iterador_Incremento (Incremento) {}
 		
 		/// @brief Constructor de Conversión desde un Iterador diferente con la misma componente Const.
 		/// @tparam NewTypeIterator Otro tipo de iterador para convertir.
@@ -281,7 +288,7 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		
 		template <typename NewTypeIterator>
 		explicit Color_Iterator (const Color_Iterator <const typename std::decay <CComponent>::type , NewTypeIterator> & Convertir) :
-			Iterador_Base (Convertir.Iterador_Base) {}
+			Iterador_Base (Convertir.Iterador_Base) , Iterador_Incremento (Convertir.Iterador_Incremento) {}
 		
 		/// @brief Constructor de Copia para el Iterador de Color.
 		/// @param Copia iterador a copiar para inicializar los componentes.
@@ -388,9 +395,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		
 		Color_Iterator & operator ++ () {
 			
-			// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente.
+			// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente la cantidad step..
 			
-			++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Incrementamos en 1.
+				
+				++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Incrementamos en la cantidad especifica.
+				
+				Iterador_Base.R = (Iterador_Base.R + Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G + Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B + Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos este elemento.
 			
@@ -403,9 +425,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		
 		const Color_Iterator & operator ++ () const {
 			
-			// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente.
+			// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente la cantidad step..
 			
-			++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Incrementamos en 1.
+				
+				++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Incrementamos en la cantidad especifica.
+				
+				Iterador_Base.R = (Iterador_Base.R + Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G + Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B + Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos este elemento.
 			
@@ -422,9 +459,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 			
 			Color_Iterator Iterador_Actual (*this);
 			
-			// Movemos todos los iteradores internos.
+			// Sumamos los iteradores internos.
 			
-			++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Movemos todos los iteradores internos.
+				
+				++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Incrementamos en la cantidad especifica.
+				
+				Iterador_Base.R = (Iterador_Base.R + Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G + Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B + Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos el iterador anterior
 			
@@ -441,9 +493,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 			
 			Color_Iterator Iterador_Actual (*this);
 			
-			// Movemos todos los iteradores internos.
+			// Sumamos los iteradores internos.
 			
-			++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Movemos todos los iteradores internos.
+				
+				++ Iterador_Base.R , ++ Iterador_Base.G , ++ Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Incrementamos en la cantidad especifica.
+				
+				Iterador_Base.R = (Iterador_Base.R + Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G + Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B + Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos el iterador anterior
 			
@@ -464,9 +531,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		
 		Color_Iterator & operator -- () {
 			
-			// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente.
+			// Validamos el step que tenemos.
 			
-			-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente.
+				
+				-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Decremento de iterador.
+				
+				Iterador_Base.R = (Iterador_Base.R - Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G - Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B - Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos este elemento.
 			
@@ -479,9 +561,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 		
 		const Color_Iterator & operator -- () const {
 			
-			// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente.
+			// Validamos el step que tenemos.
 			
-			-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Devuelve la referencia a este iterador una vez que se desplaze los iteradores internamente.
+				
+				-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Decremento de iterador.
+				
+				Iterador_Base.R = (Iterador_Base.R - Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G - Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B - Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos este elemento.
 			
@@ -498,9 +595,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 			
 			Color_Iterator Iterador_Actual (*this);
 			
-			// Movemos todos los iteradores internos.
+			// Validamos el step que tenemos.
 			
-			-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Movemos los iteradores.
+				
+				-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Decremento de iterador.
+				
+				Iterador_Base.R = (Iterador_Base.R - Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G - Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B - Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos el iterador anterior
 			
@@ -517,9 +629,24 @@ class Color_Iterator : public std::iterator <std::bidirectional_iterator_tag , C
 			
 			Color_Iterator Iterador_Actual (*this);
 			
-			// Movemos todos los iteradores internos.
+			// Validamos el step que tenemos.
 			
-			-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+			if (Iterador_Incremento == 1u) {
+				
+				// Movemos los iteradores.
+				
+				-- Iterador_Base.R , -- Iterador_Base.G , -- Iterador_Base.B;
+				
+			}
+			else {
+				
+				// Decremento de iterador.
+				
+				Iterador_Base.R = (Iterador_Base.R - Iterador_Incremento);
+				Iterador_Base.G = (Iterador_Base.G - Iterador_Incremento);
+				Iterador_Base.B = (Iterador_Base.B - Iterador_Incremento);
+				
+			}
 			
 			// Devolvemos el iterador anterior
 			

@@ -322,6 +322,21 @@ struct Caratula {
 	
 	CImagen Imagen;
 	
+	/// @brief Tamaño de la Caratula actual a lo ancho.
+	/// @note Este tamaño puede diferir dependiendo la implementación de CImagen que se haya seleccionado.
+	
+	int Imagen_Ancho = 0;
+	
+	/// @brief Tamaño de la Caratula actual a lo alto.
+	/// @note Este tamaño puede diferir dependiendo la implementación de CImagen que se haya seleccionado.
+	
+	int Imagen_Alto = 0;
+	
+	/// @brief Número de canales que tiene nuestra caratula.
+	/// @note Este tamaño puede diferir dependiendo la implementación de CImagen que se haya seleccionado.
+	
+	int Imagen_Canales = 0;
+	
 	// -------------------------  Constructores  -------------------------------
 	
 	/// @name Constructores por Defecto.
@@ -340,6 +355,16 @@ struct Caratula {
 	/// @note El numero de elementos en Pixeles_Imagen debe ser igual o mayor a (Ancho * Alto * Canales) del tipo de Pixel elegido.
 	
 	explicit Caratula (const CComponente * Pixeles_Imagen , size_t Ancho , size_t Alto , size_t Canales);
+	
+#if defined (ELECTRODEMP_ENABLE_OPENCV)
+	
+	/// @brief Constructor mediante copia por referencia de cv::Mat la cual tiene los pixeles asignados así como la información de la imagen
+	/// que fue decodificada.
+	/// @param Imagen_Referencia Imagen cv::Mat de origen para crear una copia de referencia.
+	
+	explicit Caratula (const cv::Mat & Imagen_Referencia);
+	
+#endif
 	
 	/// @brief Constructor de Copia por defecto.
 	/// @param Copia Referencia a una Caratula a copiar.
@@ -386,23 +411,21 @@ struct Caratula {
 		
 		// Validaremos que la referencia sea correcta y la imagen contenida no esté vacia.
 		
-		return (Imagen ?
+		return 
 			
 			#if defined (ELECTRODEMP_ENABLE_CIMG)
 			
-			!Imagen.is_empty ()
+			!Imagen.is_empty ();
 			
 			#elif defined (ELECTRODEMP_ENABLE_OPENCV)
 			
-			!Imagen.empty ()
+			!Imagen.empty ();
 			
 			#else
 			
-			!Imagen.Datos.empty ()
+			!Imagen.Datos.empty ();
 			
 			#endif
-			
-		: false);
 		
 	}
 	
@@ -413,23 +436,7 @@ struct Caratula {
 		
 		// Devolvemos el ancho que tiene la Imagen actualmente asignada.
 		
-		return (Is_Valid () ?
-			
-			#if defined (ELECTRODEMP_ENABLE_CIMG)
-			
-			Imagen.width ()
-			
-			#elif defined (ELECTRODEMP_ENABLE_OPENCV)
-			
-			Imagen.cols
-			
-			#else
-			
-			Imagen.Ancho
-			
-			#endif
-			
-		: 0);
+		return (Is_Valid () ? Imagen_Ancho : 0);
 		
 	}
 	
@@ -440,23 +447,7 @@ struct Caratula {
 		
 		// Devolvemos el alto de la imagen actualmente inicializada.
 		
-		return (Is_Valid () ?
-			
-			#if defined (ELECTRODEMP_ENABLE_CIMG)
-			
-			Imagen.height ()
-			
-			#elif defined (ELECTRODEMP_ENABLE_OPENCV)
-			
-			Imagen.rows
-			
-			#else
-			
-			Imagen.Alto
-			
-			#endif
-			
-		: 0);
+		return (Is_Valid () ? Imagen_Alto : 0);
 		
 	}
 	
@@ -467,23 +458,7 @@ struct Caratula {
 		
 		// Devolvemos la cantidad de canales en la Imagen o lo que es igual , el spectrum de la misma.
 		
-		return (Is_Valid () ?
-			
-			#if defined (ELECTRODEMP_ENABLE_CIMG)
-			
-			Imagen.spectrum ()
-			
-			#elif defined (ELECTRODEMP_ENABLE_OPENCV)
-			
-			Imagen.channels ()
-			
-			#else
-			
-			Imagen.Canales
-			
-			#endif
-			
-		: 0);
+		return (Is_Valid () ? Imagen_Canales : 0);
 		
 	}
 	
@@ -495,23 +470,7 @@ struct Caratula {
 		
 		// Devolvemos el producto de Ancho * Alto.
 		
-		return (Is_Valid () ?
-			
-			#if defined (ELECTRODEMP_ENABLE_CIMG)
-			
-			(Imagen.width () * Imagen.height ())
-			
-			#elif defined (ELECTRODEMP_ENABLE_OPENCV)
-			
-			(Imagen.cols * Imagen.rows)
-			
-			#else
-			
-			(Imagen.Ancho * Imagen.Alto)
-			
-			#endif
-			
-		: 0);
+		return (Is_Valid () ? (Imagen_Ancho * Imagen_Alto) : 0);
 		
 	}
 	
@@ -553,9 +512,10 @@ struct Caratula {
 			
 			// ----------------------  OpenCV  ---------------------------------
 			
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 2)) ,	// Origen en R.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels ())) ,		// Origen en G.
-			Imagen.begin ()													// Origen en B.
+			(Imagen.begin () + 2u) ,	// Origen en R.
+			(Imagen.begin () + 1u) ,	// Origen en G.
+			Imagen.begin () , 			// Origen en B.
+			Imagen_Canales				// Incremento en cantidad de canales.
 			
 			// -----------------------------------------------------------------
 			
@@ -598,9 +558,10 @@ struct Caratula {
 			
 			// ----------------------  OpenCV  ---------------------------------
 			
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 2)) ,	// Origen en R.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels ())) ,		// Origen en G.
-			Imagen.begin ()													// Origen en B.
+			(Imagen.begin () + 2u) ,	// Origen en R.
+			(Imagen.begin () + 1u) ,	// Origen en G.
+			Imagen.begin () ,			// Origen en B.
+			Imagen_Canales				// Incremento en cantidad de canales.
 			
 			// -----------------------------------------------------------------
 			
@@ -643,9 +604,10 @@ struct Caratula {
 			
 			// ----------------------  OpenCV  ---------------------------------
 			
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 2)) ,	// Origen en R.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels ())) ,		// Origen en G.
-			Imagen.begin ()													// Origen en B.
+			(Imagen.begin () + 2u) ,	// Origen en R.
+			(Imagen.begin () + 1u) ,	// Origen en G.
+			Imagen.begin () ,			// Origen en B.
+			Imagen_Canales				// Incremento en cantidad de canales.
 			
 			// -----------------------------------------------------------------
 			
@@ -688,9 +650,10 @@ struct Caratula {
 			
 			// ----------------------  OpenCV  ---------------------------------
 			
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 3)) ,	// Origen en R.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 2)) ,	// Origen en G.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels ()))		// Origen en B.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels () + 2u)) ,	// Origen en R.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels () + 1u)) ,	// Origen en G.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels ())) ,			// Origen en B.
+			Imagen_Canales														// Incremento.
 			
 			// -----------------------------------------------------------------
 			
@@ -733,9 +696,10 @@ struct Caratula {
 			
 			// ----------------------  OpenCV  ---------------------------------
 			
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 3)) ,	// Origen en R.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 2)) ,	// Origen en G.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels ()))		// Origen en B.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels () + 2u)) ,	// Origen en R.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels () + 1u)) ,	// Origen en G.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels ())) ,			// Origen en B.
+			Imagen_Canales														// Incremento.
 			
 			// -----------------------------------------------------------------
 			
@@ -778,9 +742,10 @@ struct Caratula {
 			
 			// ----------------------  OpenCV  ---------------------------------
 			
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 3)) ,	// Origen en R.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels () * 2)) ,	// Origen en G.
-			(Imagen.begin () + (Get_PixelCount () * Get_Channels ()))		// Origen en B.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels () + 2u)) ,	// Origen en R.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels () + 1u)) ,	// Origen en G.
+			(Imagen.begin () + (Get_PixelCount () * Get_Channels ())) ,			// Origen en B.
+			Imagen_Canales														// Incremento.
 			
 			// -----------------------------------------------------------------
 			
@@ -861,21 +826,67 @@ struct Caratula {
 	/// pixeles serán recortados al tipo de pixel utilizado.
 	
 	template <typename TypeInputPixel>
-	static void Organize_Pixels_ToCImg (CImagen & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales = 3u);
+	static void Organize_Pixels_ToCImg (CImg <CComponente> & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales = 3u);
 	
 	/// @}
 	
 #endif
 	
+	// -------------------------------------------------------------------------
+	
+	// Lo siguiente es para organizar pixeles de acuerdo a la matriz de opencv.
+	
+#if defined (ELECTRODEMP_ENABLE_OPENCV)
+	
+	// ------------------------  Organizador OpenCV ----------------------------
+	
+	/// @name Organizador de Pixeles para OpenCV mat.
+	/// @brief Para poder organizar los pixeles en la imagen naturalmente requerimos copiar todos los valores de cada pixel de muestra en la matriz original.
+	/// @{
+	
+	/// @brief Metodo para organizar los pixeles de Entrada a una matriz de pixeles de un tipo de dato especificado.
+	/// @tparam TypeInputPixel Tipo de los datos de entrada.
+	/// @param Pixeles_Entrada Datos de pixel organizados nativamente o de la manera de OpenCV , es decir , entrelazados de la forma BGA :
+	///	
+	///	Pixeles : B0G0R0B1G1R1B2G2R2 ..... BNGNRN , con N igual al numero de Pixeles en orden de fila mayor.
+	/// @param Salida Imagen de CImg de salida , se repartira memoria suficiente para contener todos los pixeles.
+	/// @param Ancho Ancho (numero de pixeles a lo ancho) de la imagen de entrada.
+	/// @param Alto Alto (numero de pixeles a lo alto) de la imagen de entrada.
+	/// @param Canales Numero de Canales en la imagen de entrada (1 para MONOCROMATICO , 3 para RGB ó 4 para RGBA).
+	/// @warning Pixeles_Entrada debe tener (Ancho * Alto * Canales) elementos en el array. En caso de ser necesario los valores de los
+	/// pixeles serán recortados al tipo de pixel utilizado.
+	
+	template <typename TypeInputPixel>
+	static void Organize_Pixels_ToMat (cv::Mat_ <CComponente> & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales = 3u);
+	
+	/// @}
+	
+#endif
+	
+	// -------------------------------  Utilerías  -----------------------------
+	
+	// Tenemos un metodo estatico que permite obtener la versión escalada de la imagen de caratula indicada para propositos de presentar en algún
+	// otro lienzo.
+	
+	static Caratula Get_Picture_Scaled (const Caratula & Imagen_Cover , size_t Nuevo_Ancho , size_t Nuevo_Alto);
+	
 };
 
+// -----------------------------------------------------------------------------
+
 // ------------------------  Caratula Definición -------------------------------
+
+// -----------------------------------------------------------------------------
+
+// Para el caso de CImg tenemos un metodo que nos ayuda a realizar la organización de los pixeles de acuerdo a esta biblioteca.
+
+#if defined (ELECTRODEMP_ENABLE_CIMG)
 
 // Ahora vamos a implementar el metodo para organizar un array de pixeles de entrada a la forma utilizada por CImg para el procesamiento de sus imagenes , devuelve
 // una memoria nueva con los pixeles reorganizados.
 
 template <typename TypeInputPixel>
-void Caratula::Organize_Pixels_ToCImg (CImagen & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales) {
+void Caratula::Organize_Pixels_ToCImg (CImg <CComponente> & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales) {
 	
 	// Primero asignaremos el tamaño de nuestra imagen de salida con un total de 3 canales (RGB).
 	
@@ -898,9 +909,9 @@ void Caratula::Organize_Pixels_ToCImg (CImagen & Salida , const TypeInputPixel *
 	// Para poder colocar los valores en el formato RRR...GGG...BBB... usaremos tres iteradores que nos permitiran ir llenando las respectivas
 	// partes del vector para cada canal , es decir que dividiremos nuestro array en tres secciones de (Ancho * Alto) para cada uno de los canales.
 	
-	CImagen::iterator Iterador_R = Salida.begin (); 				// Comienza en el origen.
-	CImagen::iterator Iterador_G = (Iterador_R + Cantidad); 		// Offset igual al numero de pixeles
-	CImagen::iterator Iterador_B = (Iterador_G + Cantidad); 		// Offset igual al numero de pixeles * 2
+	CImg <CComponente>::iterator Iterador_R = Salida.begin (); 				// Comienza en el origen.
+	CImg <CComponente>::iterator Iterador_G = (Iterador_R + Cantidad); 		// Offset igual al numero de pixeles
+	CImg <CComponente>::iterator Iterador_B = (Iterador_G + Cantidad); 		// Offset igual al numero de pixeles * 2
 	
 	// Ahora que tenemos los iteradores para el vector , pasaremos a asignarles los valores desde los datos de la imagen en la memoria , este arreglo
 	// tiene el formato estandar de valores : RGBRGBRGB , por lo que para cada indice , el color rojo se establece como datos(indice) , el color
@@ -977,6 +988,116 @@ void Caratula::Organize_Pixels_ToCImg (CImagen & Salida , const TypeInputPixel *
 	}
 	
 }
+
+#endif // defined (ELECTRODEMP_ENABLE_CIMG)
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
+// Para el caso de OpenCV tenemos la siguiente organización de pixeles.
+
+#if defined (ELECTRODEMP_ENABLE_OPENCV)
+
+// Ahora vamos a implementar el metodo para organizar un array de pixeles de entrada a la forma utilizada por CImg para el procesamiento de sus imagenes , devuelve
+// una memoria nueva con los pixeles reorganizados.
+
+template <typename TypeInputPixel>
+void Caratula::Organize_Pixels_ToMat (cv::Mat_ <CComponente> & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales) {
+	
+	// Para empezar primero debemos establecer el tamaño fijo de columnas para la salida , está debera ser igual al numero de canales * ancho.
+	
+	const size_t Columnas = (Ancho * Canales);
+	
+	// Establecemos el tamaño de la matriz de pixeles para la salida (Filas , Columnas).
+	
+	Salida.create (Alto , Columnas);
+	
+	// -------------------------------------------------------------------------
+	
+	// Determinaremos el total de pixeles que tiene la imagen.
+	
+	const size_t Cantidad = (Ancho * Alto);
+	
+	// Ahora determinaremos el total de datos a repartir para nuestro array de salida. Multiplicamos la cantidad de pixeles por los canales de entrada.
+	
+	const size_t Cantidad_Elementos_Entrada = (Cantidad * Canales);
+	
+	// De igual forma tendremos la cantidad de datos en el array de salida con los tres canales a utilizar.
+	
+	const size_t Cantidad_Elementos_Salida = (Cantidad * Canales);
+	
+	// Para poder colocar los valores en el formato BGRBGRBGR.....BGR usaremos tres iteradores que nos permitiran ir llenando las respectivas
+	// partes del vector para cada canal e irlos incrementando en la cantidad de canales.
+	
+	cv::Mat_ <CComponente>::iterator Iterador_B = Salida.begin (); 		// Comienza en el origen.
+	cv::Mat_ <CComponente>::iterator Iterador_G = (Iterador_B + 1u); 		// Offset igual al 1
+	cv::Mat_ <CComponente>::iterator Iterador_R = (Iterador_B + 2u); 		// Offset igual al 2
+	
+	// Ahora que tenemos los iteradores para el vector , pasaremos a asignarles los valores desde los datos de la imagen en la memoria , este arreglo
+	// tiene el formato estandar de valores : RGBRGBRGB , por lo que para cada indice , el color rojo se establece como datos(indice) , el color
+	// verde como datos(indice + 1) y el azul como datos(indice + 2). Nuestros incrementos seran de 3 en 3 que es el numero de componentes
+	// para el RGB asignado a la constante de "Imagen_Canales" y el total de datos en el arreglo original de datos es igual al numero de pixeles
+	// por el numero de canales (Pixeles * 3).
+	
+	// De acuerdo al numero de Canales en nuestra Imagen de entrada validaremos como continuar.
+	
+	if (Canales == 1u) {
+		
+		// Realizaremos la iteración por los canales de Entrada y asignaremos a todos los canales de Salida : RGB el mismo valor.
+		
+		for (size_t Indice_Pixel = 0u ; Indice_Pixel < Cantidad_Elementos_Entrada ; ++ Indice_Pixel) {
+			
+			// Tomaremos la Componente de Color actual del pixel de entrada monocromatico. Convertimos al formato especifico si es necesario.
+			
+			const CComponente Componente_Actual = (std::is_same <CComponente , TypeInputPixel>::value ?
+				Pixeles_Entrada [Indice_Pixel] : static_cast <CComponente> (Pixeles_Entrada [Indice_Pixel]));
+			
+			// Asignaremos cada componente de color segun lo establecido en su respectivo iterador.
+			
+			(*Iterador_R) = Componente_Actual;	// Componente
+			(*Iterador_G) = Componente_Actual; 	// Componente
+			(*Iterador_B) = Componente_Actual; 	// Componente
+			
+			// Incrementaremos los iteradores en el numero de canales cada uno.
+			
+			Iterador_R = (Iterador_R + Canales);
+			Iterador_G = (Iterador_G + Canales);
+			Iterador_B = (Iterador_B + Canales);
+			
+		}
+		
+	}
+	else if (Canales >= 3u) {
+		
+		// Por lo que ahora podemos asignar los valores para reorganizar los datos de la imagen y que CImg pueda trabajar con esto.
+		
+		for (size_t Indice_Entrada = 0u , Indice_Salida = 0u ;
+			(Indice_Entrada < Cantidad_Elementos_Entrada) && (Indice_Salida < Cantidad_Elementos_Salida) ;
+			Indice_Entrada += Canales , Indice_Salida += 3u) {
+			
+			// Asignaremos cada componente de color segun lo establecido en su respectivo iterador y lo incrementaremos en una unidad
+			// para que pase a la siguiente posición. Recordemos que el Orden de Componentes en OpenCV es BGA.
+			
+			(*Iterador_B) = (std::is_same <CComponente , TypeInputPixel>::value ?
+				Pixeles_Entrada [Indice_Entrada]		: static_cast <CComponente> (Pixeles_Entrada [Indice_Entrada])); 		// Componente Azul (Red)
+			(*Iterador_G) = (std::is_same <CComponente , TypeInputPixel>::value ?
+				Pixeles_Entrada [Indice_Entrada + 1u] 	: static_cast <CComponente> (Pixeles_Entrada [Indice_Entrada + 1u])); 	// Componente Verde
+			(*Iterador_R) = (std::is_same <CComponente , TypeInputPixel>::value ?
+				Pixeles_Entrada [Indice_Entrada + 2u] 	: static_cast <CComponente> (Pixeles_Entrada [Indice_Entrada + 2u])); 	// Componente Rojo (Blue)
+			
+			// Incrementaremos los iteradores en el numero de canales cada uno.
+			
+			Iterador_R = (Iterador_R + Canales);
+			Iterador_G = (Iterador_G + Canales);
+			Iterador_B = (Iterador_B + Canales);
+			
+		}
+		
+	}
+	
+}
+
+#endif // defined (ELECTRODEMP_ENABLE_OPENCV)
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
