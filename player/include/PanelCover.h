@@ -96,6 +96,10 @@ class PanelCover : public wxWindow {
 		
 		Caratula Cover_Asignado;
 		
+		// Una versión redimensionada de la caratula para presentar en el bitmap.
+		
+		Caratula Cover_Bitmap;
+		
 		// -------------------------  Contexto  --------------------------------
 		
 		// Asi mismo tenemos el contexto de memoria para poder trazar el mapa de cover actualmente asignado.
@@ -162,6 +166,10 @@ class PanelCover : public wxWindow {
 			
 		}
 		
+		/// @brief Metodo para ajustar el cover a las nuevas medidas de esta ventana y repintar.
+		
+		void Update_Cover ();
+		
 		/// @brief Metodo para limpiar la portada actualmente asignada y dejarla en la portada o caratula por defecto.
 		
 		void Clear_Cover ();
@@ -209,13 +217,13 @@ class PanelCover : public wxWindow {
 	private :
 		
 		// Tenemos un metodo simple cuyo trabajo es inicializar el Mapa actual con la Caratula asignada a esté contexto , de igual manera establece el
-		// contexto de memoria para poder trabajar al momento de repintar.
+		// contexto de memoria para poder trabajar al momento de repintar con las medidas especificadas.
 		
-		void Init_Bitmap ();
+		void Init_Bitmap (int Ancho_Mapa , int Alto_Mapa);
 		
 		// Tenemos un metodo para poder ajustar el bitmap a mostrar en pantalla usando las medidas actuales de la ventana y la imagen de caratula.
 		
-		void Adjust_Bitmap ();
+		void Adjust_Bitmap (int Ancho_Mapa , int Alto_Mapa);
 	
 };
 

@@ -91,7 +91,7 @@ class PantallaBase : public wxSPECIFIC_FRAME
 {
 	
 	protected:
-		
+	
 		wxPanel* Contenedor;
 		PanelCover* Contenedor_Cover;
 		wxPanel* Contenedor_Tag;
@@ -123,6 +123,7 @@ class PantallaBase : public wxSPECIFIC_FRAME
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void Evento_Close( wxCloseEvent& event ) { event.Skip(); }
+		virtual void Evento_Size_End( wxMoveEvent& event ) { event.Skip(); }
 		virtual void Evento_Size( wxSizeEvent& event ) { event.Skip(); }
 		virtual void Evento_Play( wxCommandEvent& event ) { event.Skip(); }
 		virtual void Evento_Pause( wxCommandEvent& event ) { event.Skip(); }
@@ -142,7 +143,7 @@ class PantallaBase : public wxSPECIFIC_FRAME
 		PantallaBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 761,500 ), long style = wxCAPTION|wxCLOSE_BOX|wxMINIMIZE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
 		
 		~PantallaBase();
-		
+	
 };
 
 ///////////////////////////////////////////////////////////////////////////////

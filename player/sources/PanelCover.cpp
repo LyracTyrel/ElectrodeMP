@@ -48,9 +48,26 @@ void PanelCover::Set_Cover (const Caratula & Cover) {
 	
 	if (Cover.Is_Valid ()) {
 		
-		// Colocaremos nuestro Cover actualmente indicado en el widget establecido.
+		// Asignaremos el cover de referencia.
 		
 		Cover_Asignado = Cover;
+		
+		// Recuperamos el tamaño de nuestra ventana actual.
+		
+		const wxSize Size_Ventana (GetSize ());
+		
+		// Obtenemos el ancho de la ventana.
+		
+		const int Ancho_Ventana = Size_Ventana.GetWidth ();
+		
+		// Ahora el alto de la ventana.
+		
+		const int Alto_Ventana = Size_Ventana.GetHeight ();
+		
+		// Vamos primero a redimensionar la caratula para que coincida con el tamaño de nuestro espacio de bitmap en la ventana.
+		// Colocaremos nuestro Cover actualmente indicado en el widget establecido.
+		
+		Cover_Bitmap = std::move (Caratula::Get_Picture_Scaled (Cover_Asignado , Ancho_Ventana , Alto_Ventana));
 		
 		// Liberamos la imagen de Bitmap que tenemos ocupada en estos momentos.
 		
@@ -58,7 +75,7 @@ void PanelCover::Set_Cover (const Caratula & Cover) {
 		
 		// Ahora vamos a rellenar el Mapa con está información para asi poder establecer el dibujo a mostrar en el widget.
 		
-		Init_Bitmap ();
+		Init_Bitmap (Ancho_Ventana , Alto_Ventana);
 		
 		// ---------------------------------------------------------------------
 		
@@ -81,6 +98,70 @@ void PanelCover::Set_Cover (const Caratula & Cover) {
 		// Finalmente asignaremos el objeto de Bitmap del Contexto de Memoria actual.
 		
 		Contexto_Cover.SelectObjectAsSource (Mapa_Cover);
+		
+	}
+	
+}
+
+// Implementaremos el codigo para actualizar el cover presentado con las nuevas medidas.
+
+void PanelCover::Update_Cover () {
+	
+	// Primero vamos a comprobar que el cover asignado no esté vacío.
+	
+	if (Cover_Asignado.Is_Valid ()) {
+		
+		// Recuperamos el tamaño de nuestra ventana actual.
+		
+		const wxSize Size_Ventana (GetSize ());
+		
+		// Obtenemos el ancho y el alto de nuestra ventana.
+		
+		const int Ancho_Ventana = Size_Ventana.GetWidth () , Alto_Ventana = Size_Ventana.GetHeight ();
+		
+		// Antes de continuar validaremos si hay necesidad de actualizar , solamente si los tamaños son diferentes.
+		
+		if ((Mapa_Cover.GetWidth () != Ancho_Ventana) || (Mapa_Cover.GetHeight () != Alto_Ventana)) {
+			
+			// Vamos a redimensionar la caratula para que coincida con el tamaño de nuestro espacio de bitmap en la ventana.
+			
+			Cover_Bitmap = std::move (Caratula::Get_Picture_Scaled (Cover_Asignado , Ancho_Ventana , Alto_Ventana));
+			
+			// Liberamos la imagen de Bitmap que tenemos ocupada en estos momentos.
+			
+			Contexto_Cover.SelectObjectAsSource (wxNullBitmap);
+			
+			// Inicaremos el bitmap de nuevo con el nuevo tamaño.
+			
+			Init_Bitmap (Ancho_Ventana , Alto_Ventana);
+			
+			// ---------------------------------------------------------------------
+			
+			// Validamos si tenemos el visualizador activo.
+			
+			#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
+			
+			// Cerraremos un visualizador previo antes de continuar.
+			
+			Caratula::Close_Preview ();
+			
+			// Iniciaremos el visualizador con esté cover.
+			
+			Caratula::Init_Preview (Cover_Asignado);
+			
+			#endif
+			
+			// ---------------------------------------------------------------------
+			
+			// Finalmente asignaremos el objeto de Bitmap del Contexto de Memoria actual.
+			
+			Contexto_Cover.SelectObjectAsSource (Mapa_Cover);
+			
+			// Y repintaremos.
+			
+			Refresh () , Update ();
+			
+		}
 		
 	}
 	
@@ -160,9 +241,13 @@ void PanelCover::Evento_Paint (wxPaintEvent & Pintador) {
 	
 	// -----------------------------  Cover  -----------------------------------
 	
+	// Obtenemos el tamaaño de nuestra ventana actual para ajustar.
+	
+	const wxSize Size_Ventana (GetSize ());
+	
 	// Comenzaremos con un simple ajuste a nuestro bitmap actual antes de pasar a pintar los pixeles de color.
 	
-	Adjust_Bitmap ();
+	Adjust_Bitmap (Size_Ventana.GetWidth () , Size_Ventana.GetHeight ());
 	
 	// Y finalmente pintaremos nuestro mapa de cover utilizando nuestro escalador de bitmap.
 	//		Posicion Origen en : 0 , 0.
@@ -269,15 +354,15 @@ PanelCover::~ PanelCover () {
 
 // Implementaremos el metodo auxiliar para rellenar todos los Pixeles de nuestro Bitmap actual utilizando la caratula asignada.
 
-void PanelCover::Init_Bitmap () {
+void PanelCover::Init_Bitmap (int Ancho_Mapa , int Alto_Mapa) {
 	
 	// Comenzaremos creando un mapa con las medidas actuales de la caratula las cuales son. Ancho de la Imagen.
 	
-	const int Ancho_Imagen = Cover_Asignado.Get_Width ();
+	const int Ancho_Imagen = Ancho_Mapa;
 	
 	// Asi como el alto de la misma.
 	
-	const int Alto_Imagen = Cover_Asignado.Get_Height ();
+	const int Alto_Imagen = Alto_Mapa;
 	
 	// Crearemos el nuevo bitmap con las medidas establecidas a 24 bits (3 Canales) y validaremos que sea correcta la asignación.
 	
@@ -309,11 +394,11 @@ void PanelCover::Init_Bitmap () {
 		
 		// Obtendremos el iterador al Origen de nuestra Imagen de Portada.
 		
-		Caratula::const_iterator Pixel_Origen = Cover_Asignado.cbegin ();
+		Caratula::const_iterator Pixel_Origen = Cover_Bitmap.cbegin ();
 		
 		// Crearemos un iterador para la Imagen de Cover , esté tendra el final de la imagen.
 		
-		Caratula::const_iterator Pixel_Final = Cover_Asignado.cend ();
+		Caratula::const_iterator Pixel_Final = Cover_Bitmap.cend ();
 		
 		// -----------------------  Asignando Pixeles  -------------------------
 		
@@ -366,16 +451,12 @@ void PanelCover::Init_Bitmap () {
 
 // Definiremos el metodo para poder realizar el ajuste a las medidas y posición del bitmap actual.
 
-void PanelCover::Adjust_Bitmap () {
+void PanelCover::Adjust_Bitmap (int Ancho_Mapa , int Alto_Mapa) {
 	
 	// ---------------------  Relación de Aspecto  -------------------------
 	
 	// Calcularemos la relación de aspecto que tiene la Imagen actual y con estó poder determinar el tamaño en alto que ocupara para mantener
 	// la misma relación de aspecto.
-	
-	// Recuperamos el tamaño de nuestra ventana actual.
-	
-	const wxSize Size_Ventana (GetSize ());
 	
 	// Ahora vamos a calcular la relación de aspecto de la Imagen que tenemos. Dividimos el ancho entre el alto de nuestro bitmap.
 	
@@ -383,11 +464,11 @@ void PanelCover::Adjust_Bitmap () {
 	
 	// Con base a esta relación de aspecto calcularemos el Nuevo Alto que debe ocupar nuestra imagen en la pantalla sin perder el aspecto.
 	
-	const int Alto_Modificado = static_cast <int> (static_cast <float> (Size_Ventana.GetWidth ()) / Aspecto_Cover);
+	const int Alto_Modificado = static_cast <int> (static_cast <float> (Ancho_Mapa) / Aspecto_Cover);
 	
 	// Asignaremos el tamaño para la Imagen total y la nueva Posición estará localizada en el origen en X (0) , y en (Alto_W / 2) - (Alto_Imagen / 2).
 	
-	Rectangulo_Cover = wxRect (0 , ((Size_Ventana.GetHeight () / 2) - (Alto_Modificado / 2)) , Size_Ventana.GetWidth () , Alto_Modificado);
+	Rectangulo_Cover = wxRect (0 , ((Alto_Mapa / 2) - (Alto_Modificado / 2)) , Ancho_Mapa , Alto_Modificado);
 	
 }
 

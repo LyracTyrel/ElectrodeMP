@@ -319,31 +319,170 @@ void Caratula::Close_Preview () {
 
 Caratula Caratula::Get_Picture_Scaled (const Caratula & Imagen_Cover , size_t Nuevo_Ancho , size_t Nuevo_Alto) {
 	
+	// Tenemos la caratula de resultado vacía por el momento.
+	
+	Caratula Resultado;
+	
+	// Asignaremos la información de los tamaños al resultado.
+	
+	Resultado.Imagen_Ancho = static_cast <int> (Nuevo_Ancho) , Resultado.Imagen_Alto = static_cast <int> (Nuevo_Alto);
+	
+	// Primero que nada vamos a validar si la imágen de entrada es valida.
+	
 	if (Imagen_Cover.Is_Valid ()) {
+		
+		// Asignaremos la cantidad de canales de la imagen de origen.
+		
+		Resultado.Imagen_Canales = Imagen_Cover.Imagen_Canales;
+		
+		// Para el caso de tener CIMG habilitado tenemos el siguiente procedimiento.
 		
 		#if defined (ELECTRODEMP_ENABLE_CIMG)
 		
-		CImagen Imagen_Resized = std::move (Imagen_Cover.Imagen.get_resize (Nuevo_Ancho , Nuevo_Alto , -100 , Imagen_Cover.Get_Channels () , 3));
+		// ---------------------------------------------------------------------
 		
-		Caratula Resultado;
+		// Utilizaremos la función get_resized la cual recibe como información las nuevas medidas (ancho , alto , profundidad) , la cantidad de canales
+		// y el metodo de interpolación el cuál será un valor entero de la siguiente manera:
+		//  	-1 = no interpolation: raw memory resizing.
+		//		0 = no interpolation: additional space is filled according to boundary_conditions.
+		//		1 = nearest-neighbor interpolation.
+		//		2 = moving average interpolation.
+		//		3 = linear interpolation.
+		//		4 = grid interpolation.
+		//		5 = cubic interpolation.
+		//		6 = lanczos interpolation.
 		
-		Resultado.Imagen = std::move (Imagen_Resized);
+		// Asignaremos el resultado de una interpolación lineal a nuestra Imagen en la caratula resultante.
 		
-		return std::move (Resultado);
+		Resultado.Imagen = std::move (Imagen_Cover.Imagen.get_resize (Resultado.Imagen_Ancho , Resultado.Imagen_Alto , -100 , Resultado.Imagen_Canales , 3));
+		
+		// ---------------------------------------------------------------------
+		
+		// Si por otro lado tenemos OpenCV habilitado entonces procederemos con lo siguiente.
 		
 		#elif defined (ELECTRODEMP_ENABLE_OPENCV)
 		
-		//cv::Mat Imagen_Resi = cv::Mat (cv::Size (303 , 303) , Imagen.type ());
+		// ---------------------------------------------------------------------
 		
-		//cv::resize (Imagen , Imagen_Resi , Imagen_Resi.size () , 0 , 0 , cv::INTER_AREA);
+		// Para el caso de OpenCV tenemos una utilería en la biblioteca de imgproc para la redimensión de imágenes mediante algoritmos de procesamiento
+		// los cuales pueden estar optimizados.
+		
+		// Para esto requerimos una matriz de pixeles de salida como referencia con el nuevo tamaño de pixeles resultante y el tipo de datos de la imágen
+		// de origen utilizando una utileria de OpenCV. De la siguiente manera.
+		
+		cv::Mat Imagen_Resultado = cv::Mat (Resultado.Imagen_Alto , Resultado.Imagen_Ancho , CV_MAKETYPE (cv::traits::Depth <CComponente>::value , Resultado.Imagen_Canales));
+		
+		// Ahora el algoritmo resize para OpenCV el cual opera sobre la matriz de pixeles de la imagen de entrada , la imagen resultado , el nuevo tamaño
+		// para la salida , posiciones de referencia (0 originalmente) y el metodo de interpolación el cual es un valor de la siguiente forma :
+		//  	INTER_NEAREST 		: nearest neighbor interpolation
+		//  	INTER_LINEAR 		: bilinear interpolation
+		//  	INTER_CUBIC 		: bicubic interpolation
+		//  	INTER_AREA 			: resampling using pixel area relation.
+		//  	INTER_LANCZOS4 		: Lanczos interpolation over 8x8 neighborhood
+		//  	INTER_MAX 			: mask for interpolation codes
+		//  	WARP_FILL_OUTLIERS 	: flag, fills all of the destination image pixels.
+		//  	WARP_INVERSE_MAP 	: flag, inverse transformation
+		
+		// Conversión de matriz interna.s
+		
+		// cv::Mat Imagen_Original (std::move (Convert_ToMat (Imagen_Cover.Imagen , Imagen_Cover.Imagen_Ancho , Imagen_Cover.Imagen_Alto ,  Imagen_Cover.Imagen_Canales)));
+		
+		// Aplicamos un reshape a la Imagen de entrada para ajustarla al numero de canales a presentar.
+		
+		cv::Mat Imagen_Original (Imagen_Cover.Imagen.reshape (Resultado.Imagen_Canales));
+		
+		// En este caso aplicremos una interpolación Lineal para mejores resultados.
+		
+		cv::resize (Imagen_Original , Imagen_Resultado , Imagen_Resultado.size () , 0 , 0 , cv::INTER_AREA);
+		
+		// Asignaremos la matriz resultante a nuestra imagen resultado.
+		
+		Resultado.Imagen = Imagen_Resultado;
+		
+		// Liberamos la matriz de pixeles asignada para disminuir su contador de referencia.
+		
+		Imagen_Resultado.release ();
+		
+		// ---------------------------------------------------------------------
 		
 		#endif
 		
+		// ---------------------------------------------------------------------
+		
 	}
 	
-	return std::move (Caratula ());
+	// Devolveremos la caratula resultante.
+	
+	return std::move (Resultado);
 	
 }
+
+// -----------------------------------------------------------------------------
+
+// Para el caso de OpenCV contamos con lo siguiente.
+
+#if defined (ELECTRODEMP_ENABLE_OPENCV)
+
+// -----------------------------------------------------------------------------
+
+// Ahora definiremos el metodo para poder convertir la matriz de pixeles del tipo especifico a una matriz multicanal principal para su procesamiento.
+
+cv::Mat Caratula::Convert_ToMat (const cv::Mat_ <CComponente> & Entrada , int Ancho_Imagen , int Alto_Imagen , int Canales_Imagen) {
+	
+	// Primero vamos a crear una matriz de salida para N canales de tipo especifico con el alto y ancho especificado.
+
+	cv::Mat Matriz_Resultado (Alto_Imagen , Ancho_Imagen , CV_MAKETYPE (cv::traits::Depth <CComponente>::value , Canales_Imagen));
+	
+	// Obtendremos una referencia al primer elemento en la matriz para iterar sobre esta de la siguiente manera.
+	
+	CComponente * Pixeles_Resultado = Matriz_Resultado.ptr <CComponente> ();
+	
+	// De la misma manera obtenemos una referencia a los pixeles de entrada para iterar.
+	
+	const CComponente * Pixeles_Entrada = Entrada.ptr ();
+	
+	// -------------------------------------------------------------------------
+	
+	// Determinaremos el total de pixeles que tiene la imagen de salida/entrada.
+	
+	const size_t Cantidad = (Ancho_Imagen * Alto_Imagen);
+	
+	// Ahora determinaremos el total de datos a repartir para nuestro array de salida. Multiplicamos la cantidad de pixeles por los canales de entrada.
+	
+	const size_t Cantidad_Elementos_Entrada = (Cantidad * Canales_Imagen);
+	
+	// De igual forma tendremos la cantidad de datos en el array de salida con los canales a utilizar.
+	
+	const size_t Cantidad_Elementos_Salida = (Cantidad * Canales_Imagen);
+	
+	// Ahora que tenemos los iteradores para el vector , pasaremos a asignarles los valores desde los datos de la imagen en la memoria , este arreglo
+	// tiene el formato estandar de valores : RGBRGBRGB , por lo que para cada indice , el color rojo se establece como datos(indice) , el color
+	// verde como datos(indice + 1) y el azul como datos(indice + 2). Nuestros incrementos seran de 3 en 3 que es el numero de componentes
+	// para el RGB asignado a la constante de "Imagen_Canales" y el total de datos en el arreglo original de datos es igual al numero de pixeles
+	// por el numero de canales (Pixeles * 3).
+	
+	// Por lo que ahora podemos asignar los valores para reorganizar los datos de la imagen y que CImg pueda trabajar con esto.
+	
+	for (size_t Indice_Entrada = 0u , Indice_Salida = 0u ;
+		(Indice_Entrada < Cantidad_Elementos_Entrada) && (Indice_Salida < Cantidad_Elementos_Salida) ;
+		Indice_Entrada += Canales_Imagen , Indice_Salida += Canales_Imagen) {
+		
+		// Asignaremos cada componente de color segun lo establecido en su respectivo iterador y lo incrementaremos en una unidad
+		// para que pase a la siguiente posición. Recordemos que el Orden de Componentes en OpenCV es BGA.
+		
+		Pixeles_Resultado [Indice_Salida] = Pixeles_Entrada [Indice_Entrada];				// Color B
+		Pixeles_Resultado [Indice_Salida + 1u] = Pixeles_Entrada [Indice_Entrada + 1u];		// Color G
+		Pixeles_Resultado [Indice_Salida + 2u] = Pixeles_Entrada [Indice_Entrada + 2u];		// Color R
+		
+	}
+	
+	// Devolvemos la referencia a nuestra matriz resultante
+	
+	return std::move (Matriz_Resultado);
+	
+}
+
+#endif
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1189,6 +1328,8 @@ Caratula Etiquetador::Get_Picture (const TagLib::ID3v2::AttachedPictureFrame * I
 	
 	Ancho_Imagen = Imagen.cols , Alto_Imagen =  Imagen.rows , Canales_Imagen = Imagen.channels ();
 	
+	// LOG_F (" Size Decode = Ancho : %i , Alto : %i , Canales : %i , Tipo : %i " , Ancho_Imagen , Alto_Imagen , Canales_Imagen , Imagen.type ());
+	
 	// Asignaremos los datos de pixel decodificados.
 	
 	Datos_Pixeles = Imagen.ptr <Caratula::CComponente> ();
@@ -1251,7 +1392,7 @@ Caratula Etiquetador::Get_Picture (const TagLib::ID3v2::AttachedPictureFrame * I
 		
 		// Liberamos memoria.
 		
-		Imagen.release ();
+		//Imagen.release ();
 		
 		#endif
 		

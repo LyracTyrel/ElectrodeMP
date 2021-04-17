@@ -703,9 +703,33 @@ void Pantalla::Evento_Size (wxSizeEvent & Argumentos) {
 	
 	this->Layout ();
 	
-	// Repintaremos el cover.
+	// Asignaremos true a la localidad especifica.
+	
+	Frame_Resize = true;
+	
+	// Actualizaremos el cover.
 	
 	Contenedor_Cover->Refresh ();
+	
+}
+
+// Definiremos el codigo para el evento size_end de nuestro frame actual.
+
+void Pantalla::Evento_Size_End (wxMoveEvent & Argumentos) {
+	
+	// Lo primero será validar si el frame fue cambiado de tamaño con la banderaa de Size.
+	
+	if (Frame_Resize) {
+		
+		// Entonces actualizaremos el cover presentado.
+		
+		Contenedor_Cover->Update_Cover ();
+		
+		// Cambiamos el estado a false.
+		
+		Frame_Resize = false;
+		
+	}
 	
 }
 

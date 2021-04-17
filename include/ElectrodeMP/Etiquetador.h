@@ -859,6 +859,16 @@ struct Caratula {
 	template <typename TypeInputPixel>
 	static void Organize_Pixels_ToMat (cv::Mat_ <CComponente> & Salida , const TypeInputPixel * Pixeles_Entrada , size_t Ancho , size_t Alto , size_t Canales = 3u);
 	
+	/// @brief Metodo que permite la generación de una matriz de N canales, con las medidas de ancho y alto especificadas mediante la matriz de entrada unicanal
+	/// esto con el fin de poder realizar operaciones sobre la matriz general.
+	/// @param Entrada Matriz de entrada con los elementos de pixeles del tipo de componente especificado.
+	/// @param Ancho Ancho de la imagen de entrada/salida.
+	/// @param Alto Alto de la imagen de entrada/salida.
+	/// @param Canales Número de canales que tendrá la imagen de salida multicanal de cv::Mat.
+	/// @return Matriz Multicanal de OpenCV con los pixeles organizados para su procesamiento.
+	
+	static cv::Mat Convert_ToMat (const cv::Mat_ <CComponente> & Entrada , int Ancho_Imagen , int Alto_Imagen , int Canales_Imagen = 3u);
+	
 	/// @}
 	
 #endif

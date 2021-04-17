@@ -253,6 +253,7 @@ PantallaBase::PantallaBase( wxWindow* parent, wxWindowID id, const wxString& tit
 	
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( PantallaBase::Evento_Close ) );
+	this->Connect( wxEVT_MOVE_END, wxMoveEventHandler( PantallaBase::Evento_Size_End ) );
 	this->Connect( wxEVT_SIZE, wxSizeEventHandler( PantallaBase::Evento_Size ) );
 	Boton_Play->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PantallaBase::Evento_Play ), NULL, this );
 	Boton_Pause->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PantallaBase::Evento_Pause ), NULL, this );
@@ -271,6 +272,7 @@ PantallaBase::~PantallaBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( PantallaBase::Evento_Close ) );
+	this->Disconnect( wxEVT_MOVE_END, wxMoveEventHandler( PantallaBase::Evento_Size_End ) );
 	this->Disconnect( wxEVT_SIZE, wxSizeEventHandler( PantallaBase::Evento_Size ) );
 	Boton_Play->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PantallaBase::Evento_Play ), NULL, this );
 	Boton_Pause->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PantallaBase::Evento_Pause ), NULL, this );

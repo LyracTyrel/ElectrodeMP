@@ -108,6 +108,12 @@ class Pantalla : public PantallaBase {
 		
 		std::shared_ptr <Reproductor> Player;
 		
+		// --------------------------  Resize  ---------------------------------
+		
+		// Declaramos una localidad que nos permite saber si el frame fue alterado en tamaño mediante el borde.
+		
+		bool Frame_Resize = false;
+		
 		// --------------------------  Slider  ---------------------------------
 		
 		// Declaramos una localidad que nos permitira determinar si estamos desplazando el audio con el seek de nuestro slider o no.
@@ -320,6 +326,12 @@ class Pantalla : public PantallaBase {
 		/// @param Argumentos Argumentos para el evento.
 		
 		void Evento_Size (wxSizeEvent & Argumentos) override;
+		
+		/// @brief Metodo para el Evento Resize_end de nuestro Frame Principal , cuando el usuario estire la pantalla el
+		/// cover de caratula para la song actual tiene que ajustarse a las nuevas medidas si es que tiene diferente tamaño.
+		/// @param Argumentos Argumentos para el evento actual.
+		
+		void Evento_Size_End (wxMoveEvent & Argumentos) override;
 		
 		/// @}
 		
