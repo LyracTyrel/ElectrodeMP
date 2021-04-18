@@ -155,7 +155,7 @@ void Caratula::Init_Preview (const Caratula & Cover) {
 
 void Caratula::Show_Preview (const Caratula & Cover , bool Asincrono) {
 	
-	// Validaremos que nuestra Imagen sea correcta y no estémos en estado de activo (previsualizado en thread secundario).
+	// Validaremos que nuestra Imagen actual sea correcta y no estémos en estado de activo (previsualizado en thread secundario).
 	
 	if (Cover.Is_Valid () && !Estado_Preview) {
 		
@@ -439,7 +439,7 @@ cv::Mat Caratula::Convert_ToMat (const cv::Mat_ <CComponente> & Entrada , int An
 	
 	// De la misma manera obtenemos una referencia a los pixeles de entrada para iterar.
 	
-	const CComponente * Pixeles_Entrada = Entrada.ptr ();
+	const CComponente * Pixeles_Entrada = Entrada.ptr <CComponente> ();
 	
 	// -------------------------------------------------------------------------
 	

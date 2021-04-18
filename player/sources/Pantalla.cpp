@@ -274,6 +274,10 @@ void Pantalla::Evento_Archivo_Abrir (wxCommandEvent & Argumentos) {
 			
 			Barra_Estado->SetStatusText (wxString ("Abierto"));
 			
+			// Ponemos el focus en el Reproductor.
+			
+			SetFocus ();
+			
 		}
 		
 	}
@@ -728,6 +732,10 @@ void Pantalla::Evento_Size_End (wxMoveEvent & Argumentos) {
 		// Cambiamos el estado a false.
 		
 		Frame_Resize = false;
+		
+		// Ponemos el focus.
+		
+		SetFocus ();
 		
 	}
 	

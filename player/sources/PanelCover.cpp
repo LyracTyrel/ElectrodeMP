@@ -137,22 +137,6 @@ void PanelCover::Update_Cover () {
 			
 			// ---------------------------------------------------------------------
 			
-			// Validamos si tenemos el visualizador activo.
-			
-			#if defined (_WIN32) && defined (ELECTRODEMP_ENABLE_CIMG)
-			
-			// Cerraremos un visualizador previo antes de continuar.
-			
-			Caratula::Close_Preview ();
-			
-			// Iniciaremos el visualizador con esté cover.
-			
-			Caratula::Init_Preview (Cover_Asignado);
-			
-			#endif
-			
-			// ---------------------------------------------------------------------
-			
 			// Finalmente asignaremos el objeto de Bitmap del Contexto de Memoria actual.
 			
 			Contexto_Cover.SelectObjectAsSource (Mapa_Cover);
