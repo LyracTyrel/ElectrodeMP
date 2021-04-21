@@ -10,7 +10,13 @@
 
 # -------------  LOG  --------------
 
-# Para habilitar la salida del LOG por consola ademas del archivo LOG.txt generado por la aplicación.
+# Para poder realizar procesos de debugueo y mostrar los procesos efectuados por la aplicación para
+# fines de debug , tenemos el LOG propio del sistema que almacena los datos en un Log.txt , para esto
+# se tiene la opción siguiente habilitada.
+
+option (ELECTRODEMP_ENABLE_LOG "Habilita el LOG del programa en un archivo LOG.txt" ON)
+
+# Para habilitar la salida del LOG por consola.
 # Se utiliza la siguiente bandera de estado (por defecto está desabilitada).
 
 option (ELECTRODEMP_ENABLE_CONSOLE_LOG "Habilita la salida LOG por consola del programa" ON)
@@ -55,26 +61,6 @@ set_property (CACHE ELECTRODEMP_SAMPLE_TYPE PROPERTY STRINGS
 # Mostraremos el mensaje con el tipo de muestra seleccionado.
 
 message (STATUS "Seleccionado el tipo de Sample : ${ELECTRODEMP_SAMPLE_TYPE}")
-
-# --------------  Pixel Type  --------------
-
-# Establecemos de igual forma una lista con tipos de datos para los pixeles de la imagen de caratula. Asi como el procesador
-# de imagenes de CImg , OpenCV.
-
-set (ELECTRODEMP_PIXEL_TYPE "unsigned char" CACHE STRING "Tipo de dato de los Pixeles de Imagen")
-
-# Colocaremos los siguientes tipos de datos , para seleccionar de una lista.
-#		unsigned char (1 byte por canal).
-#		float (4 bytes por canal).
-
-set_property (CACHE ELECTRODEMP_PIXEL_TYPE PROPERTY STRINGS
-	"unsigned char"
-	"float"
-)
-
-# Mostraremos otro mensaje para indicar el tipo de pixel que fue seleccionado.
-
-message (STATUS "Seleccionado el tipo de Pixel : ${ELECTRODEMP_PIXEL_TYPE}")
 
 # -------------  Media Player --------------
 

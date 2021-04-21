@@ -8,6 +8,10 @@
 
 // ------------------------------  LOG  ----------------------------------------
 
+// Flat que indica que se habilitó el LOG de la aplicación.
+
+#cmakedefine ELECTRODEMP_ENABLE_LOG
+
 // Flag para indicar que se habilitó la salida LOG por consola de sistema.
 
 #cmakedefine ELECTRODEMP_ENABLE_CONSOLE_LOG

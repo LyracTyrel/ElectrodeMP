@@ -163,7 +163,7 @@ void Caratula::Show_Preview (const Caratula & Cover , bool Asincrono) {
 		
 		LOG_N (" >> Visualizacion de Caratula Iniciada ")
 		
-		// Ahora validaremos la manera en la que ejecutaremos el metodo actual , si de forma asincrona o en el thread principal.
+		// Ahora validaremos la manera en la que ejecutaremos el metodo actual , si de forma asincrona o en el thread principal dentro de la aplicación.
 		
 		if (Asincrono) {
 			
@@ -173,7 +173,7 @@ void Caratula::Show_Preview (const Caratula & Cover , bool Asincrono) {
 			
 			if (Nucleo_Preview != nullptr) {
 				
-				// Esperamos a que se termine de ejecutar el thread.
+				// Esperamos a que se termine de ejecutar el thread actual.
 				
 				Nucleo_Preview->join ();
 				

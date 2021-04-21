@@ -166,6 +166,12 @@ void LOG_Terminate ();
 
 // ----------------------------  Macros LOG  -----------------------------------
 
+// Habilitamos la salida LOG.
+
+#if defined (ELECTRODEMP_ENABLE_LOG) || defined (ELECTRODEMP_ENABLE_CONSOLE_LOG)
+
+// -----------------------------------------------------------------------------
+
 // Tenemos ahora un conjunto de Macros que permiten realizar las acciones de LOG para los distintos niveles de advertencia
 // o notificaciones que tenemos.
 
@@ -193,6 +199,29 @@ void LOG_Terminate ();
 
 #define LOG_E(Cadena) 			ElectrodeMP::LOG_Write (Cadena , 	ElectrodeMP::LOG_Type::LOG_Error);
 #define LOG_FE(Formato , ...) 	ElectrodeMP::LOG_Printf (Formato , 	ElectrodeMP::LOG_Type::LOG_Error , __VA_ARGS__);
+
+// -----------------------------------------------------------------------------
+
+// Definiremos las macros vacias.
+
+#else
+
+// Definiremos las macros sin codigo.
+
+#define LOG(Cadena) 			// Empty
+#define LOG_F(Formato , ...) 	// Empty
+#define LOG_N(Cadena) 			// Empty
+#define LOG_FN(Formato , ...) 	// Empty
+#define LOG_W(Cadena) 			// Empty
+#define LOG_FW(Formato , ...) 	// Empty
+#define LOG_C(Cadena) 			// Empty
+#define LOG_FC(Formato , ...) 	// Empty
+#define LOG_E(Cadena) 			// Empty
+#define LOG_FE(Formato , ...) 	// Empty
+
+// -----------------------------------------------------------------------------
+
+#endif // defined (ELECTRODEMP_ENABLE_LOG) || defined (ELECTRODEMP_ENABLE_CONSOLE_LOG)
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 

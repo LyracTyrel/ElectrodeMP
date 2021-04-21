@@ -17,11 +17,17 @@ namespace ElectrodeMP {
 
 // -------------------------------  LOG  ---------------------------------------
 
+// Si tenemos habilitado el LOG por texto.
+
+#ifdef ELECTRODEMP_ENABLE_LOG
+
 // Comenzaremos entonces con la declaración de nuestro elemento primordial para la generación de la salida LOG
 // mediante un archivo de texto plano. Declaramos un std::filebuf para la salidad de nuestro flujo de texto utilizando
 // un buffer intermedio de stream.
 
 static std::filebuf LOG_Stream;
+
+#endif
 
 // Para sincronizar el envio de notificaciones de manera ordenada en todos los threads de trabajo que maneja
 // electrodeMP. Utilizaremos el siguiente mutex para poder bloquear la ejecución de ambos threads en un mismo metodo.
@@ -36,6 +42,16 @@ bool LOG_Init (const std::string & Filename_LOG) {
 	// Empezaremos ocasionando un bloqueo hasta que el thread actual termine de iniciar esté log.
 	
 	std::unique_lock <std::mutex> Bloqueo (LOG_Lock);
+	
+	// Escribiremos el mensaje de inicio siguiente en la salida de nuestro LOG.
+	
+	const std::string Mensaje_Init ("\n ----------------  ElectrodeMP : Reproductor de Audio y Editor de Etiquetas  --------------- \n\n");
+	
+	// Realizamos la salida del LOG de texto.
+	
+	#ifdef ELECTRODEMP_ENABLE_LOG
+	
+	// -------------------------------------------------------------------------
 	
 	// Si el LOG_Stream no está abierto todavia , entonces abriremos un nuevo flujo para la salida de texto en el stream
 	// actual con el archivo de entrada y el modo de apertura.
@@ -54,13 +70,19 @@ bool LOG_Init (const std::string & Filename_LOG) {
 		
 	}
 	
-	// Escribiremos el mensaje de inicio siguiente en la salida de nuestro LOG.
+	// Escribiremos el mensaje de inicio en la salida del LOG mediante el uso del stream buffer abierto actualmente.
 	
-	const std::string Mensaje_Init ("\n ----------------  ElectrodeMP : Reproductor de Audio y Editor de Etiquetas  --------------- \n\n");
+	LOG_Stream.sputn (Mensaje_Init.c_str () , Mensaje_Init.size ());
+	
+	#endif
+	
+	// -------------------------------------------------------------------------
 	
 	// Si la consola está habilitada entonces pasaremos a mostrar el mensaje en está misma.
 	
 	#ifdef ELECTRODEMP_ENABLE_CONSOLE_LOG
+	
+	// -------------------------------------------------------------------------
 	
 	// Asi que comenzaremos cambiando el color para nuestra pantalla de Consola.
 	
@@ -71,10 +93,6 @@ bool LOG_Init (const std::string & Filename_LOG) {
 	puts (Mensaje_Init.c_str ());
 	
 	#endif
-	
-	// Escribiremos el mensaje de inicio en la salida del LOG mediante el uso del stream buffer abierto actualmente.
-	
-	LOG_Stream.sputn (Mensaje_Init.c_str () , Mensaje_Init.size ());
 	
 	// Devolvemos true.
 	
@@ -92,6 +110,10 @@ void LOG_Write (const std::string & Cadena , LOG_Type Tipo) {
 	
 	std::unique_lock <std::mutex> Bloqueo (LOG_Lock);
 	
+	// Realizamos la salida del LOG de texto.
+	
+	#ifdef ELECTRODEMP_ENABLE_LOG
+	
 	// ----------------------------  Write  ------------------------------------
 	
 	// Realizaremos la escritura de nuestra cadena en el archivo LOG mediante el siguiente codigo que utiliza el flujo anteriormente abierto.
@@ -107,6 +129,10 @@ void LOG_Write (const std::string & Cadena , LOG_Type Tipo) {
 		LOG_Stream.sputn (Cadena_Console.c_str () , Cadena_Console.size ());
 		
 	}
+	
+	#endif
+	
+	// -------------------------------------------------------------------------
 	
 	// Si la consola de salida está habilitada entonces pasaremos a realizar la impresión de la misma cadena.
 	
@@ -194,6 +220,12 @@ void LOG_Terminate () {
 		"\n -------------------------  ElectrodeMP : Finalizado  ------------------------"
 		"\n -----------------------------------------------------------------------------\n");
 	
+	// Realizamos la salida del LOG de texto.
+	
+	#ifdef ELECTRODEMP_ENABLE_LOG
+	
+	// ----------------------------  Write  ------------------------------------
+	
 	// Validaremos para comenzar que tengamos un archivo LOG valido antes de continuar.
 	
 	if (LOG_Stream.is_open ()) {
@@ -207,6 +239,10 @@ void LOG_Terminate () {
 		LOG_Stream.close ();
 		
 	}
+	
+	#endif
+	
+	// -------------------------------------------------------------------------
 	
 	// De igual forma si tenemos habilitado la salida por consola.
 	

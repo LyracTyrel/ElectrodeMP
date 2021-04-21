@@ -753,9 +753,17 @@ Pantalla::~ Pantalla () {
 	
 	Reproductor::Terminate ();
 	
+	// -----------------------------  LOG  -------------------------------------
+	
+	// Si tenemos el LOG habilitado.
+	
+	#if defined (ELECTRODEMP_ENABLE_LOG) || defined (ELECTRODEMP_ENABLE_CONSOLE_LOG)
+	
 	// Por ultimo finalizamos el LOG de ElectrodeMP.
 	
 	ElectrodeMP::LOG_Terminate ();
+	
+	#endif
 	
 }
 

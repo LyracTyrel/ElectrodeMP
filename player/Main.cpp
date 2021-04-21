@@ -128,9 +128,19 @@ class Aplicacion : public wxApp {
 			
 			bool OnInit () override {
 				
+				// -------------------------  LOG  -----------------------------
+				
+				// Habilitamos el LOG si está la opción.
+				
+				#if defined (ELECTRODEMP_ENABLE_LOG) || defined (ELECTRODEMP_ENABLE_CONSOLE_LOG)
+				
 				// Para empezar iniciaremos el LOG de ElectrodeMP en el archivo txt (LOG.txt).
 				
 				ElectrodeMP::LOG_Init ("LOG.txt");
+				
+				#endif
+				
+				// -------------------------------------------------------------
 				
 				// Registraremos el manejador de wxImage para formato PNG.
 				
