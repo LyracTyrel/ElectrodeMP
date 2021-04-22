@@ -771,7 +771,7 @@ Pantalla::~ Pantalla () {
 
 // -----------------------------  Privados  ------------------------------------
 
-// Ahora pasaremos a definir nuestros metodos privados para nuestra pantalla principal , comenzando por el metodo para iniciar los componentes de
+// Ahora pasaremos a definir nuestros metodos privados para nuestra pantalla principal actual , comenzando por el metodo para iniciar los componentes de
 // la barra de progreso en nuestra aplicación.
 
 void Pantalla::Iniciar_Progress () {
@@ -790,7 +790,7 @@ void Pantalla::Iniciar_Progress () {
 	
 	Gauge_Progreso->Set_Background_Line (wxBitmap (wxString ("BITMAP_PROGRESS_LINE") , wxBITMAP_TYPE_PNG_RESOURCE));
 	
-	// Colocaremos el color para el progreso de está forma.
+	// Colocaremos el color para el progreso en la barra de progreso de está forma.
 	
 	Gauge_Progreso->Set_Progress_Colour (wxColour (27 , 95 , 179));
 	

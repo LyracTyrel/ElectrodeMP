@@ -39,10 +39,10 @@ path=player\sources\PanelCover.cpp
 cursor=102:1
 [source]
 path=player\sources\Pantalla.cpp
-cursor=769:70
+cursor=821:1
 [source]
 path=player\sources\PantallaBase.cpp
-cursor=199:1
+cursor=378:93
 [source]
 path=player\Main.cpp
 cursor=145:4
@@ -84,7 +84,7 @@ path=player\include\Pantalla.h
 cursor=116:29
 [header]
 path=player\include\PantallaBase.h
-cursor=151:37
+cursor=207:0
 [header]
 path=player\include\DialogoAyuda.h
 cursor=0:0
@@ -102,7 +102,7 @@ path=cmake\Modules\FindTaglib.cmake
 cursor=16:30
 [other]
 path=lib64\Makefile
-cursor=60:15
+cursor=76:20
 open=true
 [other]
 path=cmake\Templates\electrodemp_config.h.in

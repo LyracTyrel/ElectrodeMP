@@ -379,7 +379,7 @@ DialogoAcerca::DialogoAcerca( wxWindow* parent, wxWindowID id, const wxString& t
 	Bitmap_Creator = new wxStaticBitmap( Contenedor, wxID_ANY, wxBitmap( wxT("BITMAP_CREATOR"), wxBITMAP_TYPE_PNG_RESOURCE ), wxDefaultPosition, wxSize( 170,170 ), 0 );
 	Sizer_Contenedor->Add( Bitmap_Creator, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 	
-	Etiqueta_Autor = new wxStaticText( Contenedor, wxID_ANY, wxString("Desarrollado por : José Raúl Moreno Acero (Tyrel)"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	Etiqueta_Autor = new wxStaticText( Contenedor, wxID_ANY, wxString ("Desarrollado por : José Raúl Moreno Acero (Tyrel)"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	Etiqueta_Autor->Wrap( -1 );
 	Etiqueta_Autor->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 	
@@ -391,22 +391,28 @@ DialogoAcerca::DialogoAcerca( wxWindow* parent, wxWindowID id, const wxString& t
 	Bitmap_Logotipo = new wxStaticBitmap( Contenedor, wxID_ANY, wxBitmap( wxT("BITMAP_LOGOTIPO"), wxBITMAP_TYPE_PNG_RESOURCE ), wxDefaultPosition, wxSize( 100,100 ), 0 );
 	Sizer_Logos->Add( Bitmap_Logotipo, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
-	Etiqueta_Aplicacion = new wxStaticText( Contenedor, wxID_ANY, wxString("<b>ElectrodeMP - Audio Media Player Alpha</b>\n\nUn simple reproductor que se expandirá con nuevas funciones sacadas de la imaginación. Lo importante es divertirse y disfrutar acompañado de las mejores personas.\n"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
-	Etiqueta_Aplicacion->SetLabelMarkup( wxString("<b>ElectrodeMP - Audio Media Player Alpha</b>\n\nUn simple reproductor que se expandirá con nuevas funciones sacadas de la imaginación. Lo importante es divertirse y disfrutar acompañado de las mejores personas.\n") );
-	Etiqueta_Aplicacion->Wrap( -1 );
-	Etiqueta_Aplicacion->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	wxBoxSizer* Sizer_Datos;
+	Sizer_Datos = new wxBoxSizer( wxVERTICAL );
 	
-	Sizer_Logos->Add( Etiqueta_Aplicacion, 0, wxALL|wxEXPAND, 12 );
+	Etiqueta_Nombre = new wxStaticText( Contenedor, wxID_ANY, wxString ("ElectrodeMP - Audio Media Player Alpha"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	Etiqueta_Nombre->Wrap( -1 );
+	Etiqueta_Nombre->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
+	
+	Sizer_Datos->Add( Etiqueta_Nombre, 0, wxALIGN_CENTER|wxALL|wxEXPAND, 12 );
+	
+	Texto_Datos = new wxTextCtrl( Contenedor, wxID_ANY, wxString ("Un simple reproductor que se expandirá con nuevas funcionalidades sacadas de la imaginación. Lo importante es divertirse y disfrutar acompañado de las mejores personas."), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL|wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY|wxBORDER_NONE );
+	Sizer_Datos->Add( Texto_Datos, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	
+	
+	Sizer_Logos->Add( Sizer_Datos, 1, wxEXPAND|wxFIXED_MINSIZE, 0 );
 	
 	
 	Sizer_Contenedor->Add( Sizer_Logos, 1, wxALL|wxEXPAND, 10 );
 	
-	Etiqueta_Contacto = new wxStaticText( Contenedor, wxID_ANY, wxString("Para cualquier duda o aclaración puede hacerlo\nen la siguiente dirección : <b>jrma_tyrel@hotmail.com</b>"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
-	Etiqueta_Contacto->SetLabelMarkup( wxString("Para cualquier duda o aclaración puede hacerlo\nen la siguiente dirección : <b>jrma_tyrel@hotmail.com</b>") );
-	Etiqueta_Contacto->Wrap( -1 );
-	Etiqueta_Contacto->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	Texto_Contacto = new wxTextCtrl( Contenedor, wxID_ANY, wxString ("Cualquier comentario o sugerencia puede hacerlo\nen la siguiente dirección : jrma_tyrel@hotmail.com"), wxDefaultPosition, wxDefaultSize, wxTE_AUTO_URL|wxTE_CENTER|wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_READONLY|wxBORDER_NONE );
+	Texto_Contacto->SetMaxSize( wxSize( -1,30 ) );
 	
-	Sizer_Contenedor->Add( Etiqueta_Contacto, 0, wxALL|wxEXPAND, 5 );
+	Sizer_Contenedor->Add( Texto_Contacto, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
 	
 	Boton_Cerrar = new wxButton( Contenedor, wxID_ANY, wxT("Cerrar"), wxDefaultPosition, wxDefaultSize, 0 );
 	Sizer_Contenedor->Add( Boton_Cerrar, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );

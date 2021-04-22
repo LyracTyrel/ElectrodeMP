@@ -190,17 +190,17 @@ class DialogoAcerca : public wxDialog
 		wxStaticBitmap* Bitmap_Creator;
 		wxStaticText* Etiqueta_Autor;
 		wxStaticBitmap* Bitmap_Logotipo;
-		wxStaticText* Etiqueta_Aplicacion;
-		wxStaticText* Etiqueta_Contacto;
+		wxStaticText* Etiqueta_Nombre;
+		wxTextCtrl* Texto_Datos;
+		wxTextCtrl* Texto_Contacto;
 		wxButton* Boton_Cerrar;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void Evento_Cerrar( wxCommandEvent& event ) { event.Skip(); }
 	
-	
 	public:
 		
-		DialogoAcerca( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Acerca de..."), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,445 ), long style = wxDEFAULT_DIALOG_STYLE );
+		DialogoAcerca( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Acerca de..."), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,472 ), long style = wxDEFAULT_DIALOG_STYLE );
 		
 		~DialogoAcerca();
 	
