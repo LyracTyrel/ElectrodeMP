@@ -110,11 +110,13 @@ void Dialogo::Evento_Combo_Host (wxCommandEvent & Argumentos) {
 	
 }
 
-// Implementaremos el botón de aceptar para poder aplicar el cambio de dispositivo de reproducción actual y modificar con estó el reproductor.
+// Implementaremos el botón de aceptar para poder aplicar el cambio de dispositivo de reproducción actual y modificar con estó el reproductor actual.
 
 void Dialogo::Evento_Boton_Aceptar (wxCommandEvent & Argumentos) {
 	
-	// Consultaremos de nueva cuenta el indice de host seleccionado.
+	// -----------------------  Asignando Host/Device  -------------------------
+	
+	// Consultaremos de nueva cuenta el indice de host seleccionado actualmente.
 	
 	const PaHostApiIndex Indice_Seleccionado = static_cast <PaHostApiIndex> (Combo_Host->GetSelection ());
 	
@@ -122,13 +124,49 @@ void Dialogo::Evento_Boton_Aceptar (wxCommandEvent & Argumentos) {
 	
 	const PaDeviceIndex Indice_Dispositivo = Player->Get_DeviceByName (Combo_Device->GetStringSelection ().ToStdString ());
 	
-	// Ahora pasaremos a seleccionar nuestra API de Host y recargar la lista de hosts disponibles para está misma.
+	// Antes de continuar nos aseguramos que sean diferentes con los indices de dispositivo actual.
 	
-	Player->Set_Host (Indice_Seleccionado);
+	if ((Indice_Seleccionado != Player->Get_HostIndex ()) || (Indice_Dispositivo != Player->Get_DeviceIndex ())) {
+		
+		// ---------------------------  Validando  -----------------------------
+		
+		// Determinaremos el estado actual del reproductor , para que podamos aplicar el cambio de dispositivo de salida hace falta que se encuentre
+		// en estado pausa o stop. Para esto utilizamos lo siguiente.
+		
+		if (Player->Is_Play ()) {
+			
+			// Entonces tendremos que detener la reproducción actual para esto utilizaremos un dialogo de YES/NO/CANCEL para continuar.
+			
+			wxMessageDialog Dialogo_Aceptar (this , wxString ("La reproducción actual se pausara de momento , continuar ?") , wxString ("Reproducción en curso") ,
+				(wxYES_NO | wxCANCEL | wxCENTRE));
+			
+			// Mostraremos el dialogo modal y obtendremos la respuesta.
+			
+			if (Dialogo_Aceptar.ShowModal () == wxID_YES) {
+				
+				// ------------------  Estableciendo Index  --------------------
+				
+				// Ahora pasaremos a seleccionar nuestra API de Host actual y recargar la lista de hosts disponibles para está misma.
+				
+				Player->Set_Host (Indice_Seleccionado);
+				
+				// Asignaremos esté dispositivo a nuestro reproductor actual.
+				
+				Player->Set_Device (Indice_Dispositivo);
+				
+				// -----------------------  Reset  -----------------------------
+				
+				// Ahora para terminar vamos a realizar un reset en el reproductor actual.
+				
+				Reset_Player ();
+				
+			}
+			
+		}
+		
+	}
 	
-	// Asignaremos esté dispositivo a nuestro reproductor.
-	
-	Player->Set_Device (Indice_Dispositivo);
+	// -------------------------------------------------------------------------
 	
 	// Terminaremos el dialogo modal con el codigo de retorno ID_OK.
 	
@@ -143,6 +181,72 @@ void Dialogo::Evento_Boton_Cancelar (wxCommandEvent & Argumentos) {
 	// Terminaremos el dialogo actual con el id de retorno ID_CANCEL.
 	
 	this->EndModal (wxID_CANCEL);
+	
+}
+
+// -----------------------------------------------------------------------------
+
+// -------------------------  Reset Definición  --------------------------------
+
+// Implementaremos el metodo para resetear el estado del reproductor y dejar el audio en el tiempo actualmente establecido.
+
+void Dialogo::Reset_Player () {
+	
+	// Obtendremos el estado del reproductor actual y lo validaremos.
+	
+	const int Estado_Actual = Player->Get_State ();
+	
+	// Validamos el estado del reproductor.
+	
+	if (Estado_Actual != Reproductor::Estado::E_Close) {
+		
+		// Lo primero será retomar el Filename del archivo de audio abierto actualmente para poderlo reabrir al momento actual.
+		
+		const std::string Filename_Actual (Player->Get_Filename ());
+		
+		// Ahora obtendremos el tiempo en segundos del reproductor donde está la song actualmente sonando.
+		
+		const size_t Tiempo_Actual (Player->Get_ActualTime ());
+		
+		// ---------------------------------------------------------------------
+		
+		// Cerraremos nuestro archivo abierto actualmente si es el estado del reproductor y validamos el resultado.
+		
+		if (Player->Close ()) {
+			
+			// Continuaremos entonces abriendo nuevamente el archivo de audio con el nuevo host/device seleccionado.
+			
+			if (Player->Open (Filename_Actual)) {
+				
+				// Si el reproductor estaba en estado play o pause moveremos entonces el seek al siguiente valor.
+				
+				if ((Estado_Actual == Reproductor::Estado::E_Play) || (Estado_Actual == Reproductor::Estado::E_Pause)) {
+					
+					// Moveremos el seek al tiempo actual.
+					
+					Player->Seek (Tiempo_Actual);
+					
+				}
+				
+			}
+			else {
+				
+				// Problemas al abrir el archivo de audio.
+				
+				wxMessageBox (wxString ("Error al Abrir archivo de audio") , wxString ("Error al Abrir Audio") , (wxOK | wxCENTRE | wxICON_ERROR));
+				
+			}
+			
+		}
+		else {
+			
+			// Problemas al cerrar el archivo de audio.
+			
+			wxMessageBox (wxString ("Error al Cerrar archivo de audio") , wxString ("Error al Cerrar Audio") , (wxOK | wxCENTRE | wxICON_ERROR));
+			
+		}
+		
+	}
 	
 }
 

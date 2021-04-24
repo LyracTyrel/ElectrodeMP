@@ -826,7 +826,7 @@ bool ElectrodeProgreso::Progreso_Line_Inside (const wxPoint & Posicion) {
 		
 		wxMemoryDC Contexto_Linea;
 		
-		// Seleccionamos el objeto fuente sobre esté bitmap.
+		// Seleccionamos el objeto fuente sobre esté bitmap actual.
 		
 		Contexto_Linea.SelectObjectAsSource (Fondo_Progreso_Line);
 		
@@ -844,7 +844,7 @@ bool ElectrodeProgreso::Progreso_Line_Inside (const wxPoint & Posicion) {
 			
 		}
 		
-		// Desagsignamos el objeto fuente.
+		// Desagsignamos el objeto fuente actual.
 		
 		Contexto_Linea.SelectObjectAsSource (wxNullBitmap);
 		

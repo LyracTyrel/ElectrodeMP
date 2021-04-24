@@ -688,9 +688,17 @@ void Pantalla::Evento_Close (wxCloseEvent & Argumentos) {
 		
 	}
 	
-	// Esperaremos 1 segundo para cerra la aplicación.
+	// -------------------------------------------------------------------------
+	
+	#if defined (ELECTRODEMP_ENABLE_LOG) || defined (ELECTRODEMP_ENABLE_CONSOLE_LOG)
+	
+	// Esperaremos 1 segundo para cerra la aplicación y visualizar el LOG de la consola.
 	
 	wxThread::This ()->Sleep (1000);
+	
+	#endif
+	
+	// -------------------------------------------------------------------------
 	
 	// Terminaremos la aplicación actual con Destroy.
 	

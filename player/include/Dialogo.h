@@ -130,6 +130,16 @@ class Dialogo : public DialogoDevice {
 		
 		/// @}
 	
+	// Metodo para resetear nuestro audio abierto actualmente ya sea ese el caso.
+	
+	private :
+		
+		// -------------------------  Reset  -----------------------------------
+		
+		// Reseteamos el estado de nuestra reproducción para reabrir el stream con el nuevo Host/Device seleccionado.
+		
+		void Reset_Player ();
+	
 };
 
 /// @}

@@ -130,11 +130,11 @@ class Aplicacion : public wxApp {
 				
 				// -------------------------  LOG  -----------------------------
 				
-				// Habilitamos el LOG si está la opción.
+				// Habilitamos el LOG si está la opción actual.
 				
 				#if defined (ELECTRODEMP_ENABLE_LOG) || defined (ELECTRODEMP_ENABLE_CONSOLE_LOG)
 				
-				// Para empezar iniciaremos el LOG de ElectrodeMP en el archivo txt (LOG.txt).
+				// Para empezar iniciaremos el LOG de ElectrodeMP en el archivo txt actual (LOG.txt).
 				
 				ElectrodeMP::LOG_Init ("LOG.txt");
 				
@@ -142,7 +142,7 @@ class Aplicacion : public wxApp {
 				
 				// -------------------------------------------------------------
 				
-				// Registraremos el manejador de wxImage para formato PNG.
+				// Registraremos el manejador de wxImage para formato PNG actual.
 				
 				wxImage::AddHandler (new wxPNGHandler ());
 				
